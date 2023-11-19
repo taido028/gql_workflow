@@ -9,7 +9,7 @@ from gql_workflow.DBDefinitions import (
     WorkflowStateModel,
     WorkflowStateRoleTypeModel,
     WorkflowStateUserModel,
-    WorkflowTransitionModel
+    WorkflowTransitionModel,
 )
 
 from sqlalchemy.future import select
@@ -17,6 +17,7 @@ from sqlalchemy.future import select
 
 def get_demodata(asyncSessionMaker):
     pass
+
 
 async def randomWorkflowData(session):
     workflow = {
@@ -66,43 +67,37 @@ async def randomWorkflowData(session):
         ],
     }
 
-
     data = {
-        'awauthorizations': [
-            {'id': 'e0ca6b6c-e962-4944-88d6-fb85e98572de'},
+        "awauthorizations": [
+            {"id": "e0ca6b6c-e962-4944-88d6-fb85e98572de"},
         ],
-        'awauthorizationusers': [
+        "awauthorizationusers": [
             {
-                'id': 'c84ce88c-690c-4ff3-990c-9d4c01e847c1',
-                'authorization_id': 'e0ca6b6c-e962-4944-88d6-fb85e98572de',
-                'user_id': '',
-
-                'accesslevel': 1
+                "id": "c84ce88c-690c-4ff3-990c-9d4c01e847c1",
+                "authorization_id": "e0ca6b6c-e962-4944-88d6-fb85e98572de",
+                "user_id": "",
+                "accesslevel": 1,
             },
         ],
-        'awauthorizationgroups': [
+        "awauthorizationgroups": [
             {
-                'id': '829e3687-2cfa-4961-ad45-68f26e3bc3d8',
-                'authorization_id': 'e0ca6b6c-e962-4944-88d6-fb85e98572de',
-                'group_id': '',
-
-                'accesslevel': 1
-            },            
-        ],
-        'awauthorizationroletypes': [
-            {
-                'id': '8eeb8bee-a54e-4514-bddd-941c1a1f17e8',
-                'authorization_id': 'e0ca6b6c-e962-4944-88d6-fb85e98572de',
-                'group_id': '',
-                'roletype_id': '',
-
-                'accesslevel': 1
+                "id": "829e3687-2cfa-4961-ad45-68f26e3bc3d8",
+                "authorization_id": "e0ca6b6c-e962-4944-88d6-fb85e98572de",
+                "group_id": "",
+                "accesslevel": 1,
             },
         ],
-
-
+        "awauthorizationroletypes": [
+            {
+                "id": "8eeb8bee-a54e-4514-bddd-941c1a1f17e8",
+                "authorization_id": "e0ca6b6c-e962-4944-88d6-fb85e98572de",
+                "group_id": "",
+                "roletype_id": "",
+                "accesslevel": 1,
+            },
+        ],
     }
-    #roleTypes = await getRoleTypesFromDb()
+    # roleTypes = await getRoleTypesFromDb()
     usersToAdd = []
     async with session.begin():
         session.add_all(usersToAdd)
@@ -110,17 +105,15 @@ async def randomWorkflowData(session):
     return None
 
 
-
-
-
 import os
 import json
 from uoishelpers.feeders import ImportModels
 import datetime
 
+
 def get_demodata():
     def datetime_parser(json_dict):
-        for (key, value) in json_dict.items():
+        for key, value in json_dict.items():
             if key in ["startdate", "enddate", "lastchange", "created"]:
                 if value is None:
                     dateValueWOtzinfo = None
@@ -131,23 +124,20 @@ def get_demodata():
                     except:
                         print("jsonconvert Error", key, value, flush=True)
                         dateValueWOtzinfo = None
-                
+
                 json_dict[key] = dateValueWOtzinfo
         return json_dict
 
-
-    with open("./systemdata.json", "r") as f:
+    with open("./systemdata.json", "r", encoding="utf-8") as f:
         jsonData = json.load(f, object_hook=datetime_parser)
 
     return jsonData
 
-async def initDB(asyncSessionMaker):
 
+async def initDB(asyncSessionMaker):
     defaultNoDemo = "False"
     if defaultNoDemo == os.environ.get("DEMO", defaultNoDemo):
-        dbModels = [
-            
-        ]
+        dbModels = []
     else:
         dbModels = [
             AuthorizationModel,
@@ -158,7 +148,7 @@ async def initDB(asyncSessionMaker):
             WorkflowStateModel,
             WorkflowStateRoleTypeModel,
             WorkflowStateUserModel,
-            WorkflowTransitionModel
+            WorkflowTransitionModel,
         ]
 
     jsonData = get_demodata()
