@@ -50,3 +50,11 @@ class Query:
     from .workflowStateUserGQLModel import workflow_state_user_by_id
 
     workflow_state_user_by_id = workflow_state_user_by_id
+
+    from .workflowTransitionGQLModel import workflow_transition
+
+    workflow_transition = workflow_transition
+
+    from .workflowTransitionGQLModel import workflow_transition_by_id
+
+    workflow_transition_by_id = workflow_transition_by_id

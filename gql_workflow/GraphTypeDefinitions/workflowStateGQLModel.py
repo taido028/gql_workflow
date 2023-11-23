@@ -87,11 +87,15 @@ class WorkflowStateGQLModel:
         result = await loader.filter_by(workflowstate_id=self.id)
         return result
 
-    @strawberry.field(description="""The owing workflow""")
+    @strawberry.field(description="""The owning workflow""")
     async def workflow(
         self, info: strawberry.types.Info
     ) -> Union["WorkflowGQLModel", None]:
-        result = await WorkflowGQLModel.resolve_reference(info, id=self.workflow_id)
+        result = (
+            await gql_workflow.GraphTypeDefinitions.WorkflowGQLModel.resolve_reference(
+                info, self.workflow_id
+            )
+        )
         return result
 
 
