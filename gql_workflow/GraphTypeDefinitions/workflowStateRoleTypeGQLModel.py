@@ -2,6 +2,7 @@ import datetime
 import strawberry
 from typing import List, Optional, Union, Annotated
 import typing
+from uuid import UUID
 
 import gql_workflow.GraphTypeDefinitions
 
@@ -26,7 +27,7 @@ RoleTypeGQLModel = Annotated["RoleTypeGQLModel", strawberry.lazy(".externals")]
 )
 class WorkflowStateRoleTypeGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: strawberry.ID):
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
         loader = getLoaders(info).workflowstateusers
         result = await loader.load(id)
         if result is not None:
@@ -37,11 +38,11 @@ class WorkflowStateRoleTypeGQLModel:
         return result
 
     @strawberry.field(description="""primary key""")
-    def id(self) -> strawberry.ID:
+    def id(self) -> UUID:
         return self.id
 
     @strawberry.field(description="""Timestamp""")
-    def lastchange(self) -> strawberry.ID:
+    def lastchange(self) -> UUID:
         return self.lastchange
 
     @strawberry.field(description="""State""")
@@ -81,7 +82,7 @@ async def workflow_state_role_type(
 
 @strawberry.field(description="Retrieves a role type of a state in workflow by its id")
 async def workflow_state_role_type_by_id(
-    self, info: strawberry.types.Info, id: strawberry.ID
+    self, info: strawberry.types.Info, id: UUID
 ) -> typing.Optional[WorkflowStateRoleTypeGQLModel]:
     result = await WorkflowStateRoleTypeGQLModel.resolve_reference(info=info, id=id)
     return result
@@ -96,10 +97,10 @@ async def workflow_state_role_type_by_id(
 
 @strawberry.input(description="""""")
 class WorkflowStateAddRoleGQLModel:
-    workflowstate_id: strawberry.ID = strawberry.field(
+    workflowstate_id: UUID = strawberry.field(
         default=None, description="Identification of workflow state"
     )
-    roletype_id: strawberry.ID = strawberry.field(
+    roletype_id: UUID = strawberry.field(
         default=None, description="Identification of role type"
     )
     accesslevel: int
@@ -107,10 +108,10 @@ class WorkflowStateAddRoleGQLModel:
 
 @strawberry.input(description="""""")
 class WorkflowStateRemoveRoleGQLModel:
-    workflowstate_id: strawberry.ID = strawberry.field(
+    workflowstate_id: UUID = strawberry.field(
         default=None, description="Identification of workflow state"
     )
-    roletype_id: strawberry.ID = strawberry.field(
+    roletype_id: UUID = strawberry.field(
         default=None, description="Identification of role type"
     )
 

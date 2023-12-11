@@ -1,8 +1,8 @@
 import sqlalchemy
 
-        
+
 from .Base import BaseModel
-from .UUID import UUIDColumn
+from .uuid import UUIDColumn
 
 from .AuthorizationGroupModel import AuthorizationGroupModel
 from .AuthorizationModel import AuthorizationModel

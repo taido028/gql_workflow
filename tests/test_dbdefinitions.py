@@ -8,8 +8,18 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_workflow.DBDefinitions import BaseModel
-from gql_workflow.DBDefinitions import AuthorizationModel, AuthorizationGroupModel, AuthorizationUserModel, AuthorizationRoleTypeModel
-from gql_workflow.DBDefinitions import WorkflowModel, WorkflowStateModel, WorkflowStateRoleTypeModel, WorkflowStateUserModel
+from gql_workflow.DBDefinitions import (
+    AuthorizationModel,
+    AuthorizationGroupModel,
+    AuthorizationUserModel,
+    AuthorizationRoleTypeModel,
+)
+from gql_workflow.DBDefinitions import (
+    WorkflowModel,
+    WorkflowStateModel,
+    WorkflowStateRoleTypeModel,
+    WorkflowStateUserModel,
+)
 
 from tests.shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
@@ -36,7 +46,7 @@ from gql_workflow.DBDefinitions import UUIDColumn
 
 
 def test_connection_uuidcolumn():
-    col = UUIDColumn(name="name")
+    col = UUIDColumn()
 
     assert col is not None
 

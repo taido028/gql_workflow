@@ -1,6 +1,7 @@
 import datetime
 import strawberry
 from typing import List, Optional, Union, Annotated
+from uuid import UUID
 
 import gql_workflow.GraphTypeDefinitions
 
@@ -23,7 +24,7 @@ WorkflowStateGQLModel = Annotated[
 @strawberry.federation.type(keys=["id"], description="""Entity graph of dataflow""")
 class WorkflowGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: strawberry.ID):
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
         loader = getLoaders(info).workflows
         result = await loader.load(id)
         if result is not None:
@@ -34,11 +35,11 @@ class WorkflowGQLModel:
         return result
 
     @strawberry.field(description="""primary key""")
-    def id(self) -> strawberry.ID:
+    def id(self) -> UUID:
         return self.id
 
     @strawberry.field(description="""Timestamp""")
-    def lastchange(self) -> strawberry.ID:
+    def lastchange(self) -> UUID:
         return self.lastchange
 
     @strawberry.field(description="""name""")
@@ -69,7 +70,7 @@ class WorkflowGQLModel:
 #####################################################################
 @strawberry.field(description="""Finds an workflow by their id""")
 async def workflow_by_id(
-    self, info: strawberry.types.Info, id: strawberry.ID
+    self, info: strawberry.types.Info, id: UUID
 ) -> Union["WorkflowGQLModel", None]:
     result = await WorkflowGQLModel.resolve_reference(info, id)
     return result
@@ -97,22 +98,22 @@ class WorkflowInsertGQLModel:
     name: str
     name_en: Optional[str] = ""
 
-    type_id: Optional[strawberry.ID] = None
-    id: Optional[strawberry.ID] = None
+    type_id: Optional[UUID] = None
+    id: Optional[UUID] = None
 
 
 @strawberry.input
 class WorkflowUpdateGQLModel:
     lastchange: datetime.datetime
-    id: strawberry.ID
+    id: UUID
     name: Optional[str] = None
     name_en: Optional[str] = None
-    type_id: Optional[strawberry.ID] = None
+    type_id: Optional[UUID] = None
 
 
 @strawberry.type
 class WorkflowResultGQLModel:
-    id: strawberry.ID = None
+    id: UUID = None
     msg: str = None
 
     @strawberry.field(description="""Result of workflow operation""")

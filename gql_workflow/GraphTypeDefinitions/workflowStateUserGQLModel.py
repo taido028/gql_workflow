@@ -2,6 +2,7 @@ import datetime
 import strawberry
 from typing import List, Optional, Union, Annotated
 import typing
+from uuid import UUID
 
 import gql_workflow.GraphTypeDefinitions
 
@@ -28,7 +29,7 @@ WorkflowStateResultGQLModel = Annotated[
 )
 class WorkflowStateUserGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: strawberry.ID):
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
         loader = getLoaders(info).workflowstateusers
         result = await loader.load(id)
         if result is not None:
@@ -38,11 +39,11 @@ class WorkflowStateUserGQLModel:
         return result
 
     @strawberry.field(description="""primary key""")
-    def id(self) -> strawberry.ID:
+    def id(self) -> UUID:
         return self.id
 
     @strawberry.field(description="""Timestamp""")
-    def lastchange(self) -> strawberry.ID:
+    def lastchange(self) -> UUID:
         return self.lastchange
 
     @strawberry.field(description="""User""")
@@ -87,7 +88,7 @@ async def workflow_state_user(
 
 @strawberry.field(description="Retrieves a user of a state in workflow by its id")
 async def workflow_state_user_by_id(
-    self, info: strawberry.types.Info, id: strawberry.ID
+    self, info: strawberry.types.Info, id: UUID
 ) -> typing.Optional[WorkflowStateUserGQLModel]:
     result = await WorkflowStateUserGQLModel.resolve_reference(info=info, id=id)
     return result
@@ -102,13 +103,11 @@ async def workflow_state_user_by_id(
 
 @strawberry.input(description="""""")
 class WorkflowStateAddUserGQLModel:
-    workflowstate_id: strawberry.ID = strawberry.field(
+    workflowstate_id: UUID = strawberry.field(
         default=None, description="Identification of workflow state"
     )
-    user_id: strawberry.ID = strawberry.field(
-        default=None, description="Identification of user"
-    )
-    group_id: strawberry.ID = strawberry.field(
+    user_id: UUID = strawberry.field(default=None, description="Identification of user")
+    group_id: UUID = strawberry.field(
         default=None,
         description="Identification of group for which the user has appropriate access level",
     )
@@ -117,13 +116,11 @@ class WorkflowStateAddUserGQLModel:
 
 @strawberry.input(description="""""")
 class WorkflowStateRemoveUserGQLModel:
-    workflowstate_id: strawberry.ID = strawberry.field(
+    workflowstate_id: UUID = strawberry.field(
         default=None, description="Identification of workflow state"
     )
-    user_id: strawberry.ID = strawberry.field(
-        default=None, description="Identification of user"
-    )
-    group_id: strawberry.ID = strawberry.field(
+    user_id: UUID = strawberry.field(default=None, description="Identification of user")
+    group_id: UUID = strawberry.field(
         default=None,
         description="Identification of group for which the user has appropriate access level",
     )

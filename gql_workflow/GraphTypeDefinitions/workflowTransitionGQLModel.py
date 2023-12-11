@@ -2,6 +2,7 @@ import datetime
 import strawberry
 from typing import List, Optional, Union, Annotated
 import typing
+from uuid import UUID
 
 import gql_workflow.GraphTypeDefinitions
 
@@ -22,7 +23,7 @@ WorkflowStateGQLModel = Annotated[
 )
 class WorkflowTransitionGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: strawberry.ID):
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
         loader = getLoaders(info).workflowtransitions
         result = await loader.load(id)
         if result is not None:
@@ -33,11 +34,11 @@ class WorkflowTransitionGQLModel:
         return result
 
     @strawberry.field(description="""primary key""")
-    def id(self) -> strawberry.ID:
+    def id(self) -> UUID:
         return self.id
 
     @strawberry.field(description="""Timestamp""")
-    def lastchange(self) -> strawberry.ID:
+    def lastchange(self) -> UUID:
         return self.lastchange
 
     @strawberry.field(description="""name""")
@@ -94,7 +95,7 @@ async def workflow_transition(
 
 @strawberry.field(description="Retrieves a transition in workflow by its id")
 async def workflow_transition_by_id(
-    self, info: strawberry.types.Info, id: strawberry.ID
+    self, info: strawberry.types.Info, id: UUID
 ) -> typing.Optional[WorkflowTransitionGQLModel]:
     result = await WorkflowTransitionGQLModel.resolve_reference(info=info, id=id)
     return result
@@ -109,21 +110,21 @@ async def workflow_transition_by_id(
 
 @strawberry.input(description="""""")
 class WorkflowTransitionInsertGQLModel:
-    workflow_id: strawberry.ID
-    sourcestate_id: strawberry.ID
-    destinationstate_id: strawberry.ID
+    workflow_id: UUID
+    sourcestate_id: UUID
+    destinationstate_id: UUID
     name: str
     name_en: Optional[str] = ""
     valid: Optional[bool] = True
-    id: Optional[strawberry.ID] = None
+    id: Optional[UUID] = None
 
 
 @strawberry.input(description="""""")
 class WorkflowTransitionUpdateGQLModel:
     lastchange: datetime.datetime
-    id: strawberry.ID
-    sourcestate_id: Optional[strawberry.ID]
-    destinationstate_id: Optional[strawberry.ID]
+    id: UUID
+    sourcestate_id: Optional[UUID]
+    destinationstate_id: Optional[UUID]
     valid: Optional[bool] = None
     name: Optional[str] = None
     name_en: Optional[str] = None
@@ -131,7 +132,7 @@ class WorkflowTransitionUpdateGQLModel:
 
 @strawberry.type(description="""""")
 class WorkflowTransitionResultGQLModel:
-    id: strawberry.ID = None
+    id: UUID = None
     msg: str = None
 
     @strawberry.field(description="""Result of workflow transition operation""")

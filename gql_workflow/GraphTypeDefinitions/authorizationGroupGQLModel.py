@@ -2,6 +2,7 @@ import datetime
 import strawberry
 from typing import List, Optional, Union, Annotated
 import typing
+from uuid import UUID
 
 import gql_workflow.GraphTypeDefinitions
 
@@ -24,7 +25,7 @@ AuthorizationResultGQLModel = Annotated[
 )
 class AuthorizationGroupGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: strawberry.ID):
+    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
         loader = getLoaders(info).authorizationgroups
         result = await loader.load(id)
         if result is not None:
@@ -35,7 +36,7 @@ class AuthorizationGroupGQLModel:
         return result
 
     @strawberry.field(description="""Entity primary key""")
-    def id(self, info: strawberry.types.Info) -> strawberry.ID:
+    def id(self, info: strawberry.types.Info) -> UUID:
         return self.id
 
     @strawberry.field(description="""Read, write, or other?""")
@@ -77,7 +78,7 @@ async def authorization_group_page(
 
 @strawberry.field(description="Retrieves a group authorization by its id")
 async def authorization_group_by_id(
-    self, info: strawberry.types.Info, id: strawberry.ID
+    self, info: strawberry.types.Info, id: UUID
 ) -> typing.Optional[AuthorizationGroupGQLModel]:
     result = await AuthorizationGroupGQLModel.resolve_reference(info=info, id=id)
     return result
@@ -92,15 +93,15 @@ async def authorization_group_by_id(
 
 @strawberry.input
 class AuthorizationAddGroupGQLModel:
-    authorization_id: strawberry.ID
-    group_id: strawberry.ID
+    authorization_id: UUID
+    group_id: UUID
     accesslevel: int
 
 
 @strawberry.input
 class AuthorizationRemoveGroupGQLModel:
-    authorization_id: strawberry.ID
-    group_id: strawberry.ID
+    authorization_id: UUID
+    group_id: UUID
 
 
 @strawberry.mutation(description="""Adds or updates a group at the authorization""")
