@@ -109,6 +109,7 @@ import os
 import json
 from uoishelpers.feeders import ImportModels
 import datetime
+import uuid
 
 
 def get_demodata():
@@ -126,6 +127,14 @@ def get_demodata():
                         dateValueWOtzinfo = None
 
                 json_dict[key] = dateValueWOtzinfo
+
+            if (key in ["id", "changeby", "createby"]) or (key.endswith("_id")):
+                if key == "outer_id":
+                    json_dict[key] = value
+                elif value not in ["", None]:
+                    json_dict[key] = uuid.UUID(value)
+                else:
+                    pass
         return json_dict
 
     with open("./systemdata.json", "r", encoding="utf-8") as f:
@@ -135,8 +144,8 @@ def get_demodata():
 
 
 async def initDB(asyncSessionMaker):
-    defaultNoDemo = "False"
-    if defaultNoDemo == os.environ.get("DEMO", defaultNoDemo):
+    demo = os.environ.get("DEMO", None)
+    if demo not in [None, "true"]:
         dbModels = []
     else:
         dbModels = [

@@ -35,7 +35,9 @@ def singleCall(asyncFunc):
 
     return result
 
+
 from gql_workflow.DBFeeder import initDB
+
 
 @singleCall
 async def RunOnceAndReturnSessionMaker():
@@ -45,7 +47,9 @@ async def RunOnceAndReturnSessionMaker():
 
     print(f'starting engine for "{connectionString}"')
     import os
-    makeDrop = os.environ.get("DEMO", "") == "true"
+
+    demo = os.environ.get("DEMO", None)
+    makeDrop = demo in [None, "true"]
     result = await startEngine(
         connectionstring=connectionString, makeDrop=makeDrop, makeUp=True
     )
@@ -72,13 +76,15 @@ async def RunOnceAndReturnSessionMaker():
 from strawberry.asgi import GraphQL
 
 from gql_workflow.Dataloaders import createLoaders
+
+
 async def createContext():
     asyncSessionMaker = await RunOnceAndReturnSessionMaker()
     loaders = await createLoaders(asyncSessionMaker)
     return {
         "asyncSessionMaker": await RunOnceAndReturnSessionMaker(),
         "all": await createLoaders(asyncSessionMaker),
-        #**loaders,
+        # **loaders,
     }
 
 
@@ -100,10 +106,9 @@ class MyGraphQL(GraphQL):
 
 
 from gql_workflow.GraphTypeDefinitions import schema
+
 ## ASGI app, kterou "moutneme"
-graphql_app = MyGraphQL(
-    schema, graphiql=True, allow_queries_via_get=True
-)
+graphql_app = MyGraphQL(schema, graphiql=True, allow_queries_via_get=True)
 
 app = FastAPI()
 app.mount("/gql", graphql_app)
