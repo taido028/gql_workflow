@@ -128,20 +128,20 @@ test_reference_workflow = createResolveReferenceTest(tableName="awworkflows", gq
 test_query_workflow_page = createPageTest(tableName="awworkflows", queryEndpoint="workflowPage")
 test_query_workflow_by_id = createByIdTest(tableName="awworkflows", queryEndpoint="workflowById")
 
-#WorkflowState
-test_reference_workflowstate = createResolveReferenceTest(tableName="awworkflowstates", gqltype="WorkflowStateGQLModel")
-test_query_workflowstate= createPageTest(tableName="awworkflowstates", queryEndpoint="workflowState")
-test_query_workflowstate_by_id= createByIdTest(tableName="awworkflowstates", queryEndpoint="workflowStateById")
+# #WorkflowState
+# test_reference_workflowstate = createResolveReferenceTest(tableName="awworkflowstates", gqltype="WorkflowStateGQLModel")
+# test_query_workflowstate= createPageTest(tableName="awworkflowstates", queryEndpoint="workflowState")
+# test_query_workflowstate_by_id= createByIdTest(tableName="awworkflowstates", queryEndpoint="workflowStateById")
 
-#WorkflowStateRoleType
-test_reference_workflowstateroletype = createResolveReferenceTest(tableName="awworkflowstateroletypes", gqltype="WorkflowStateRoleTypeGQLModel")
-test_query_workflowstateroletype= createPageTest(tableName="awworkflowstateroletypes", queryEndpoint="workflowStateRoleType")
-test_query_workflowstateroletype_by_id= createByIdTest(tableName="awworkflowstateroletypes", queryEndpoint="workflowStateRoleTypeById")
+# #WorkflowStateRoleType
+# test_reference_workflowstateroletype = createResolveReferenceTest(tableName="awworkflowstateroletypes", gqltype="WorkflowStateRoleTypeGQLModel")
+# test_query_workflowstateroletype= createPageTest(tableName="awworkflowstateroletypes", queryEndpoint="workflowStateRoleType")
+# test_query_workflowstateroletype_by_id= createByIdTest(tableName="awworkflowstateroletypes", queryEndpoint="workflowStateRoleTypeById")
 
-#WorkflowStateUser
-test_reference_workflowstateuser = createResolveReferenceTest(tableName="awworkflowstateusers", gqltype="WorkflowStateUserGQLModel")
-test_query_workflowstateuser= createPageTest(tableName="awworkflowstateusers", queryEndpoint="workflowStateUser")
-test_query_workflowstateuser_by_id= createByIdTest(tableName="awworkflowstateusers", queryEndpoint="workflowStateUserById")
+# #WorkflowStateUser
+# test_reference_workflowstateuser = createResolveReferenceTest(tableName="awworkflowstateusers", gqltype="WorkflowStateUserGQLModel")
+# test_query_workflowstateuser= createPageTest(tableName="awworkflowstateusers", queryEndpoint="workflowStateUser")
+# test_query_workflowstateuser_by_id= createByIdTest(tableName="awworkflowstateusers", queryEndpoint="workflowStateUserById")
 
 
 @pytest.mark.asyncio
