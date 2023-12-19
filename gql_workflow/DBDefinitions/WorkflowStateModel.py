@@ -15,7 +15,7 @@ class WorkflowStateModel(BaseModel):
     name = Column(String)
     name_en = Column(String)
 
-    valid = Column(Boolean)
+    valid = Column(Boolean, default=True, comment="if this entity is valid or invalid")
 
     workflow_id = Column(ForeignKey("awworkflows.id"), index=True)
     # workflow = relationship("WorkflowModel", back_populates="states")

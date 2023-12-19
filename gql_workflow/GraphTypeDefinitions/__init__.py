@@ -10,8 +10,10 @@ def AsyncSessionFromInfo(info):
     )
     return info.context["session"]
 
+
 def getLoaders(info):
-    return info.context['all']
+    return info.context["all"]
+
 
 # @strawberryA.federation.type(keys=["id"], description="""Entity graph of dataflow""")
 # class WorkflowGQLModel:
@@ -34,7 +36,7 @@ def getLoaders(info):
 #     @strawberryA.field(description="""name""")
 #     def name(self) -> str:
 #         return self.name
-    
+
 #     @strawberryA.field(description="""states in the workflow""")
 #     async def states(self, info: strawberryA.types.Info) -> List["WorkflowStateGQLModel"]:
 #         loader = getLoaders(info).workflowstates
@@ -69,11 +71,11 @@ def getLoaders(info):
 #     @strawberryA.field(description="""name""")
 #     def name(self) -> str:
 #         return self.name
-    
+
 #     @strawberryA.field(description="""if teh state is enabled""")
 #     def valid(self) -> str:
 #         return self.valid
-    
+
 #     @strawberryA.field(description="""outcomming transitions""")
 #     async def next_transitions(self, info: strawberryA.types.Info) -> List["WorkflowTransitionGQLModel"]:
 #         loader = getLoaders(info).workflowtransitions
@@ -85,24 +87,24 @@ def getLoaders(info):
 #         loader = getLoaders(info).workflowtransitions
 #         result = await loader.filter_by(destinationstate_id=self.id)
 #         return result
-    
+
 #     @strawberryA.field(description="""User rights""")
 #     async def users(self, info: strawberryA.types.Info) -> List["WorkflowStateUserGQLModel"]:
 #         loader = getLoaders(info).workflowstateusers
 #         result = await loader.filter_by(workflowstate_id=self.id)
 #         return result
-    
+
 #     @strawberryA.field(description="""User rights""")
 #     async def roletypes(self, info: strawberryA.types.Info) -> List["WorkflowStateRoleTypeGQLModel"]:
 #         loader = getLoaders(info).workflowstateroletypes
 #         result = await loader.filter_by(workflowstate_id=self.id)
 #         return result
-    
+
 #     @strawberryA.field(description="""The owing workflow""")
 #     async def workflow(self, info: strawberryA.types.Info) -> Union["WorkflowGQLModel", None]:
 #         result = await WorkflowGQLModel.resolve_reference(info, id=self.workflow_id)
 #         return result
-    
+
 
 # @strawberryA.federation.type(keys=["id"], description="""Entity defining users with some rights for the state in dataflow (node in graph)""")
 # class WorkflowStateUserGQLModel:
@@ -121,7 +123,7 @@ def getLoaders(info):
 #     @strawberryA.field(description="""Timestamp""")
 #     def lastchange(self) -> strawberryA.ID:
 #         return self.lastchange
-   
+
 #     @strawberryA.field(description="""User""")
 #     async def user(self, info: strawberryA.types.Info) -> Union["UserGQLModel", None]:
 #         result = await UserGQLModel.resolve_reference(id=self.user_id)
@@ -154,7 +156,7 @@ def getLoaders(info):
 #     @strawberryA.field(description="""Timestamp""")
 #     def lastchange(self) -> strawberryA.ID:
 #         return self.lastchange
-   
+
 #     @strawberryA.field(description="""State""")
 #     async def state(self, info: strawberryA.types.Info) -> Union["WorkflowStateGQLModel", None]:
 #         result = await WorkflowStateGQLModel.resolve_reference(info, self.workflowstate_id)
@@ -191,12 +193,12 @@ def getLoaders(info):
 #     @strawberryA.field(description="""if the transition is enabled""")
 #     def valid(self) -> str:
 #         return self.valid
-    
+
 #     @strawberryA.field(description="""name""")
 #     async def source(self, info: strawberryA.types.Info) -> Union["WorkflowStateGQLModel", None]:
 #         result = await WorkflowStateGQLModel.resolve_reference(info, self.sourcestate_id)
 #         return result
-    
+
 #     @strawberryA.field(description="""name""")
 #     async def destination(self, info: strawberryA.types.Info) -> Union["WorkflowStateGQLModel", None]:
 #         result = await WorkflowStateGQLModel.resolve_reference(info, self.destinationstate_id)
@@ -206,7 +208,6 @@ def getLoaders(info):
 #     async def workflow(self, info: strawberryA.types.Info) -> Union["WorkflowGQLModel", None]:
 #         result = await WorkflowGQLModel.resolve_reference(info, id=self.workflow_id)
 #         return result
-    
 
 
 # @strawberryA.federation.type(
@@ -268,21 +269,21 @@ def getLoaders(info):
 #     @strawberryA.field(description="""Entity primary key""")
 #     def id(self, info: strawberryA.types.Info) -> strawberryA.ID:
 #         return self.id
-    
+
 #     @strawberryA.field(description=""""Read, write, or other?""")
 #     def accesslevel(self, info: strawberryA.types.Info) -> int:
 #         return self.accesslevel
-    
+
 #     @strawberryA.field(description="""To which authorization this access definition belongs""")
 #     async def authorization(self, info: strawberryA.types.Info) -> AuthorizationGQLModel:
 #         result = await AuthorizationGQLModel.resolve_reference(info, self.authorization_id)
 #         return result
-    
+
 #     @strawberryA.field(description="""User which has this access""")
 #     async def user(self, info: strawberryA.types.Info) -> UserGQLModel:
 #         result = UserGQLModel(id=self.user_id)
 #         return result
-    
+
 
 # @strawberryA.federation.type(extend=True, keys=["id"])
 # class RoleTypeGQLModel:
@@ -315,26 +316,26 @@ def getLoaders(info):
 #     @strawberryA.field(description="""Entity primary key""")
 #     def id(self, info: strawberryA.types.Info) -> strawberryA.ID:
 #         return self.id
-    
+
 #     @strawberryA.field(description="""Read, write, or other?""")
 #     def accesslevel(self, info: strawberryA.types.Info) -> int:
 #         return self.accesslevel
-   
+
 #     @strawberryA.field(description="""To which authorization this access definition belongs""")
 #     async def authorization(self, info: strawberryA.types.Info) -> AuthorizationGQLModel:
 #         result = await AuthorizationGQLModel.resolve_reference(info, self.authorization_id)
 #         return result
-    
+
 #     @strawberryA.field(description="""Role type which user must play in the group to have this access""")
 #     async def role_type(self, info: strawberryA.types.Info) -> "RoleTypeGQLModel":
 #         result = RoleTypeGQLModel(id=self.roletype_id)
 #         return result
-    
+
 #     @strawberryA.field(description="""Group where the user having appropriate role has this access""")
 #     async def group(self, info: strawberryA.types.Info) -> "GroupGQLModel":
 #         result = GroupGQLModel(id=self.group_id)
 #         return result
-    
+
 
 # @strawberryA.federation.type(
 #     keys=["id"], description="""Entity representing an access to information"""
@@ -351,16 +352,16 @@ def getLoaders(info):
 #     @strawberryA.field(description="""Entity primary key""")
 #     def id(self, info: strawberryA.types.Info) -> strawberryA.ID:
 #         return self.id
-    
+
 #     @strawberryA.field(description="""Read, write, or other?""")
 #     def accesslevel(self, info: strawberryA.types.Info) -> int:
 #         return self.accesslevel
-   
+
 #     @strawberryA.field(description="""To which authorization this access definition belongs""")
 #     async def authorization(self, info: strawberryA.types.Info) -> AuthorizationGQLModel:
 #         result = await AuthorizationGQLModel.resolve_reference(info, self.authorization_id)
 #         return result
-    
+
 #     @strawberryA.field(description="""Group which has this access""")
 #     async def group(self, info: strawberryA.types.Info) -> "GroupGQLModel":
 #         result = GroupGQLModel(id=self.group_id)
@@ -438,7 +439,7 @@ import datetime
 #     name: Optional[str] = None
 #     name_en: Optional[str] = None
 #     type_id: Optional[strawberryA.ID] = None
-    
+
 # @strawberryA.type
 # class WorkflowResultGQLModel:
 #     id: strawberryA.ID = None
@@ -453,7 +454,7 @@ import datetime
 # class WorkflowStateInsertGQLModel:
 #     workflow_id: strawberryA.ID
 #     name: str
-#     name_en: Optional[str] = ""   
+#     name_en: Optional[str] = ""
 #     valid: Optional[bool] = True
 #     id: Optional[strawberryA.ID] = None
 
@@ -464,7 +465,7 @@ import datetime
 #     valid: Optional[bool] = None
 #     name: Optional[str] = None
 #     name_en: Optional[str] = None
-    
+
 # @strawberryA.type
 # class WorkflowStateResultGQLModel:
 #     id: strawberryA.ID = None
@@ -481,7 +482,7 @@ import datetime
 #     sourcestate_id: strawberryA.ID
 #     destinationstate_id: strawberryA.ID
 #     name: str
-#     name_en: Optional[str] = ""   
+#     name_en: Optional[str] = ""
 #     valid: Optional[bool] = True
 #     id: Optional[strawberryA.ID] = None
 
@@ -494,7 +495,7 @@ import datetime
 #     valid: Optional[bool] = None
 #     name: Optional[str] = None
 #     name_en: Optional[str] = None
-    
+
 # @strawberryA.type
 # class WorkflowTransitionResultGQLModel:
 #     id: strawberryA.ID = None
@@ -545,7 +546,7 @@ import datetime
 #     role_type_id: strawberryA.ID
 #     group_id: strawberryA.ID
 
-    
+
 # @strawberryA.type
 # class AuthorizationResultGQLModel:
 #     id: strawberryA.ID = None
@@ -555,7 +556,6 @@ import datetime
 #     async def authorization(self, info: strawberryA.types.Info) -> Union[AuthorizationGQLModel, None]:
 #         result = await AuthorizationGQLModel.resolve_reference(info, self.id)
 #         return result
-
 
 
 # @strawberryA.type
@@ -681,7 +681,7 @@ import datetime
 #         result.id = workflow.id
 #         if row is None:
 #             result.msg = "fail"
-            
+
 #         return result
 
 #     @strawberryA.mutation
@@ -702,7 +702,7 @@ import datetime
 #         result.id = state.id
 #         if row is None:
 #             result.msg = "fail"
-            
+
 #         return result
 
 #     @strawberryA.mutation
@@ -723,7 +723,7 @@ import datetime
 #         result.id = state.id
 #         if row is None:
 #             result.msg = "fail"
-            
+
 #         return result
 
 ###########################################################################################################################
@@ -751,5 +751,7 @@ from .workflowStateUserGQLModel import WorkflowStateUserGQLModel
 from .workflowTransitionGQLModel import WorkflowTransitionGQLModel
 from .workflowStateRoleTypeGQLModel import WorkflowStateRoleTypeGQLModel
 
-schema = strawberryA.federation.Schema(query=Query, types=(UserGQLModel,), mutation=Mutation)
-#schema = strawberryA.federation.Schema(query=Query, mutation=Mutation)
+schema = strawberryA.federation.Schema(
+    query=Query, types=(UserGQLModel,), mutation=Mutation
+)
+# schema = strawberryA.federation.Schema(query=Query, mutation=Mutation)

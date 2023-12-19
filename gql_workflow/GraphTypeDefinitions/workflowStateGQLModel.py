@@ -54,7 +54,7 @@ class WorkflowStateGQLModel:
 
     @strawberry.field(description="""if the state is enabled""")
     def valid(self) -> Optional[bool]:
-        return self.valid
+        return self.valid if self.valid is not None else False
 
     @strawberry.field(description="""outcomming transitions""")
     async def next_transitions(
