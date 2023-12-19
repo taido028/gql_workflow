@@ -4,7 +4,7 @@ import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
 
-from gql_workflow.GraphTypeDefinitions import schema
+from GraphTypeDefinitions import schema
 
 
 from tests.gqlshared import (

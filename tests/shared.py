@@ -9,7 +9,7 @@ import pytest
 import logging
 
 # from ..uoishelpers.uuid import UUIDColumn
-from gql_workflow.DBDefinitions import (
+from DBDefinitions import (
     BaseModel,
     AuthorizationModel,
     AuthorizationUserModel,
@@ -43,7 +43,7 @@ async def prepare_in_memory_sqllite():
     return async_session_maker
 
 
-from gql_workflow.DBFeeder import get_demodata
+from utils.DBFeeder import get_demodata
 
 
 async def prepare_demodata(async_session_maker):
@@ -69,7 +69,7 @@ async def prepare_demodata(async_session_maker):
     )
 
 
-from gql_workflow.Dataloaders import createLoadersContext
+from utils.Dataloaders import createLoadersContext
 
 
 # async def createContext(asyncSessionMaker):

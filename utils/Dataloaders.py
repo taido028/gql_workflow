@@ -1,8 +1,8 @@
 from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
-
+import logging
 from functools import cache
 
-from gql_workflow.DBDefinitions import (
+from DBDefinitions import (
     WorkflowModel,
     WorkflowStateModel,
     WorkflowStateRoleTypeModel,
@@ -39,6 +39,12 @@ class Loaders:
     workflowtransitions = None
 
     pass
+
+
+import asyncio
+import os
+from aiodataloader import DataLoader
+from uoishelpers.resolvers import select, update, delete
 
 
 def createLoaders(asyncSessionMaker, models=dbmodels) -> Loaders:
@@ -81,6 +87,77 @@ def createLoaders(asyncSessionMaker, models=dbmodels) -> Loaders:
         """
 
     return Loaders()
+
+
+def getLoadersFromInfo(info) -> Loaders:
+    context = info.context
+    loaders = context["loaders"]
+    return loaders
+
+
+demouser = {
+    "id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+    "name": "John",
+    "surname": "Newbie",
+    "email": "john.newbie@world.com",
+    "roles": [
+        {
+            "valid": True,
+            "group": {"id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003", "name": "Uni"},
+            "roletype": {
+                "id": "ced46aa4-3217-4fc1-b79d-f6be7d21c6b6",
+                "name": "administrátor",
+            },
+        },
+        {
+            "valid": True,
+            "group": {"id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003", "name": "Uni"},
+            "roletype": {
+                "id": "ae3f0d74-6159-11ed-b753-0242ac120003",
+                "name": "rektor",
+            },
+        },
+    ],
+}
+
+
+def getUserFromInfo(info) -> dict | None:
+    context = info.context
+    # print(list(context.keys()))
+    result = context.get("user", None)
+    """
+    if result is None:
+        authorization = context["request"].headers.get("Authorization", None)
+        if authorization is not None:
+            if "Bearer " in authorization:
+                token = authorization.split(" ")[1]
+                if token == "2d9dc5ca-a4a2-11ed-b9df-0242ac120003":
+                    result = demouser
+                    context["user"] = result
+    logging.debug("getUserFromInfo", result)
+    """
+    return result
+
+
+def getGroupFromInfo(info):
+    # Len pre testovacie účely
+    result = demouser
+    return result
+    """
+    context = info.context
+    # print(list(context.keys()))
+    result = context.get("user", None)
+    if result is None:
+        authorization = context["request"].headers.get("Authorization", None)
+        if authorization is not None:
+            if 'Bearer ' in authorization:
+                token = authorization.split(' ')[1]
+                if token == "2d9dc5ca-a4a2-11ed-b9df-0242ac120003":
+                    result = demouser
+                    context["user"] = result
+    logging.debug("getUserFromInfo", result)
+    return result
+    """
 
 
 def createLoadersContext(asyncSessionMaker):

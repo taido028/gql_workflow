@@ -4,7 +4,7 @@ import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
 
-from gql_workflow.GraphTypeDefinitions import schema
+from GraphTypeDefinitions import schema
 
 from tests.shared import (
     prepare_demodata,
@@ -13,15 +13,17 @@ from tests.shared import (
     createContext,
 )
 
-from tests.gqlshared import (
-    createByIdTest, 
-    createPageTest, 
-    createResolveReferenceTest
-)
+from tests.gqlshared import createByIdTest, createPageTest, createResolveReferenceTest
 
 
 ###     Query test
 
-test_reference_workflowstate = createResolveReferenceTest(tableName="awworkflowstates", gqltype="WorkflowStateGQLModel")
-test_query_workflowstate= createPageTest(tableName="awworkflowstates", queryEndpoint="workflowState")
-test_query_workflowstate_by_id= createByIdTest(tableName="awworkflowstates", queryEndpoint="workflowStateById")
+test_reference_workflowstate = createResolveReferenceTest(
+    tableName="awworkflowstates", gqltype="WorkflowStateGQLModel"
+)
+test_query_workflowstate = createPageTest(
+    tableName="awworkflowstates", queryEndpoint="workflowState"
+)
+test_query_workflowstate_by_id = createByIdTest(
+    tableName="awworkflowstates", queryEndpoint="workflowStateById"
+)

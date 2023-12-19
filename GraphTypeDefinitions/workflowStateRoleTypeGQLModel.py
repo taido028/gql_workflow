@@ -3,12 +3,24 @@ import strawberry
 from typing import List, Optional, Union, Annotated
 import typing
 from uuid import UUID
+import uuid
 
-import gql_workflow.GraphTypeDefinitions
 
+from sqlalchemy.util import typing
+from GraphTypeDefinitions.BaseGQLModel import BaseGQLModel
+from utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
 
-def getLoaders(info):
-    return info.context["all"]
+from GraphTypeDefinitions._GraphResolvers import (
+    resolve_id,
+    resolve_name,
+    resolve_valid,
+    resolve_lastchange,
+    resolve_accesslevel,
+    resolve_createdby,
+    resolve_changedby,
+    createRootResolver_by_id,
+    createRootResolver_by_page,
+)
 
 
 WorkflowGQLModel = Annotated["WorkflowGQLModel", strawberry.lazy(".workflowGQLModel")]
@@ -25,45 +37,38 @@ RoleTypeGQLModel = Annotated["RoleTypeGQLModel", strawberry.lazy(".externals")]
     keys=["id"],
     description="""Entity defining role types with some rights for the state in dataflow (node in graph)""",
 )
-class WorkflowStateRoleTypeGQLModel:
+class WorkflowStateRoleTypeGQLModel(BaseGQLModel):
     @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
-        loader = getLoaders(info).workflowstateusers
-        result = await loader.load(id)
-        if result is not None:
-            result._type_definition = cls._type_definition  # little hack :)
-            result.__strawberry_definition__ = (
-                cls._type_definition
-            )  # some version of strawberry changed :(
-        return result
+    # async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+    #     loader = getLoaders(info).workflowstateusers
+    #     result = await loader.load(id)
+    #     if result is not None:
+    #         result._type_definition = cls._type_definition  # little hack :)
+    #         result.__strawberry_definition__ = (
+    #             cls._type_definition
+    #         )  # some version of strawberry changed :(
+    #     return result
 
-    @strawberry.field(description="""primary key""")
-    def id(self) -> UUID:
-        return self.id
+    def getLoader(cls, info):
+        return getLoadersFromInfo(info).workflowstateroletypes
 
-    @strawberry.field(description="""Timestamp""")
-    def lastchange(self) -> UUID:
-        return self.lastchange
+    id = resolve_id
+    lastchange = resolve_lastchange
+    accesslevel = resolve_accesslevel
 
     @strawberry.field(description="""State""")
     async def state(
         self, info: strawberry.types.Info
-    ) -> Union["WorkflowStateGQLModel", None]:
-        result = await gql_workflow.GraphTypeDefinitions.WorkflowStateGQLModel.resolve_reference(
-            info, self.workflowstate_id
-        )
+    ) -> Optional["WorkflowStateGQLModel"]:
+        loader = getLoadersFromInfo(info).workflowstates
+        result = await loader.load(self.workflowstate_id)
         return result
 
     @strawberry.field(description="""Role type with some rights""")
-    async def role_type(
-        self, info: strawberry.types.Info
-    ) -> Union["RoleTypeGQLModel", None]:
-        result = (
-            await gql_workflow.GraphTypeDefinitions.RoleTypeGQLModel.resolve_reference(
-                id=self.roletype_id
-            )
-        )
-        return result
+    def role_type(self) -> Optional["RoleTypeGQLModel"]:
+        from .externals import RoleTypeGQLModel
+
+        return RoleTypeGQLModel(id=self.roletype_id)
 
 
 #####################################################################
@@ -71,21 +76,32 @@ class WorkflowStateRoleTypeGQLModel:
 # Special fields for query
 #
 #####################################################################
-@strawberry.field(description="""Gets a role type of state in workflows """)
-async def workflow_state_role_type(
-    self, info: strawberry.types.Info, skip: int = 0, limit: int = 20
-) -> List["WorkflowStateRoleTypeGQLModel"]:
-    loader = getLoaders(info).workflowstateroletypes
-    result = await loader.page(skip=skip, limit=limit)
-    return result
 
 
-@strawberry.field(description="Retrieves a role type of a state in workflow by its id")
-async def workflow_state_role_type_by_id(
-    self, info: strawberry.types.Info, id: UUID
-) -> typing.Optional[WorkflowStateRoleTypeGQLModel]:
-    result = await WorkflowStateRoleTypeGQLModel.resolve_reference(info=info, id=id)
-    return result
+from dataclasses import dataclass
+from uoishelpers.resolvers import createInputs
+
+
+@createInputs
+@dataclass
+class WorkflowStateRoleTypeWhereFilter:
+    workflowstate_id: typing.Optional[uuid.UUID]
+    roletype_id: typing.Optional[uuid.UUID]
+    accesslevel: int
+
+
+workflow_state_role_type = createRootResolver_by_page(
+    scalarType=WorkflowStateRoleTypeGQLModel,
+    whereFilterType=WorkflowStateRoleTypeWhereFilter,
+    description="""Returns roletype of workflow states by page""",
+    loaderLambda=lambda info: getLoadersFromInfo(info).workflowstateroletypes,
+)
+
+
+workflow_state_role_type_by_id = createRootResolver_by_id(
+    WorkflowStateRoleTypeGQLModel,
+    description="""Returns workflow state roletype by ID""",
+)
 
 
 #####################################################################
@@ -95,18 +111,18 @@ async def workflow_state_role_type_by_id(
 #####################################################################
 
 
-@strawberry.input(description="""""")
+@strawberry.input(description="""Input structure - C and U operation""")
 class WorkflowStateAddRoleGQLModel:
-    workflowstate_id: UUID = strawberry.field(
+    workflowstate_id: uuid.UUID = strawberry.field(
         default=None, description="Identification of workflow state"
     )
-    roletype_id: UUID = strawberry.field(
+    roletype_id: uuid.UUID = strawberry.field(
         default=None, description="Identification of role type"
     )
-    accesslevel: int
+    accesslevel: int = strawberry.field(description="access level")
 
 
-@strawberry.input(description="""""")
+@strawberry.input(description=""" D operation""")
 class WorkflowStateRemoveRoleGQLModel:
     workflowstate_id: UUID = strawberry.field(
         default=None, description="Identification of workflow state"
@@ -120,11 +136,11 @@ class WorkflowStateRemoveRoleGQLModel:
 async def workflow_state_add_role(
     self, info: strawberry.types.Info, payload: WorkflowStateAddRoleGQLModel
 ) -> Optional["WorkflowStateResultGQLModel"]:
-    loader = getLoaders(info).workflowstateroletypes
+    loader = getLoadersFromInfo(info).workflowstateroletypes
     existing = await loader.filter_by(
         workflowstate_id=payload.workflowstate_id, roletype_id=payload.roletype_id
     )
-    result = gql_workflow.GraphTypeDefinitions.WorkflowStateResultGQLModel()
+    result = WorkflowStateResultGQLModel()
     result.msg = "ok"
     row = next(existing, None)
     if row is None:
@@ -143,12 +159,12 @@ async def workflow_state_add_role(
 async def workflow_state_remove_role(
     self, info: strawberry.types.Info, payload: WorkflowStateRemoveRoleGQLModel
 ) -> Optional["WorkflowStateResultGQLModel"]:
-    loader = getLoaders(info).workflowstateroletypes
+    loader = getLoadersFromInfo(info).workflowstateroletypes
     existing = await loader.filter_by(
         workflowstate_id=payload.workflowstate_id, roletype_id=payload.roletype_id
     )
     existing = next(existing, None)
-    result = gql_workflow.GraphTypeDefinitions.WorkflowStateResultGQLModel()
+    result = WorkflowStateResultGQLModel()
     result.id = payload.workflowstate_id
     if existing is None:
         result.msg = "fail"

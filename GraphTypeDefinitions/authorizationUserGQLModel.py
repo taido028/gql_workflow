@@ -3,8 +3,6 @@ import strawberry
 from typing import List, Optional, Union, Annotated
 from uuid import UUID
 
-import gql_workflow.GraphTypeDefinitions
-
 
 def getLoaders(info):
     return info.context["all"]
@@ -48,14 +46,14 @@ class AuthorizationUserGQLModel:
     async def authorization(
         self, info: strawberry.types.Info
     ) -> Optional[AuthorizationGQLModel]:
-        result = await gql_workflow.GraphTypeDefinitions.AuthorizationGQLModel.resolve_reference(
+        result = await AuthorizationGQLModel.resolve_reference(
             info, self.authorization_id
         )
         return result
 
     @strawberry.field(description="""User which has this access""")
     async def user(self, info: strawberry.types.Info) -> UserGQLModel:
-        result = gql_workflow.GraphTypeDefinitions.UserGQLModel(id=self.user_id)
+        result = UserGQLModel(id=self.user_id)
         return result
 
 
@@ -94,7 +92,7 @@ async def authorization_add_user(
     existing = await loader.filter_by(
         authorization_id=authorization.authorization_id, user_id=authorization.user_id
     )
-    result = gql_workflow.GraphTypeDefinitions.AuthorizationResultGQLModel()
+    result = AuthorizationResultGQLModel()
     result.msg = "ok"
     row = next(existing, None)
     if row is None:
@@ -118,7 +116,7 @@ async def authorization_remove_user(
         authorization_id=authorization.authorization_id, user_id=authorization.user_id
     )
     existing = next(existing, None)
-    result = gql_workflow.GraphTypeDefinitions.AuthorizationResultGQLModel()
+    result = AuthorizationResultGQLModel()
     result.id = authorization.authorization_id
     if existing is None:
         result.msg = "fail"

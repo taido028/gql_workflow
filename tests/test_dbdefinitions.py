@@ -4,10 +4,10 @@ import sys
 import asyncio
 import os
 
-from gql_workflow.DBDefinitions import startEngine, ComposeConnectionString
+from DBDefinitions import startEngine, ComposeConnectionString
 
 
-from gql_workflow.DBDefinitions import (
+from DBDefinitions import (
     BaseModel,
     AuthorizationModel,
     AuthorizationUserModel,

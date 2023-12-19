@@ -13,14 +13,14 @@ from strawberry.fastapi import GraphQLRouter
 ## Definice DB typu (pomoci SQLAlchemy https://www.sqlalchemy.org/)
 ## SQLAlchemy zvoleno kvuli moznost komunikovat s DB asynchronne
 ## https://docs.sqlalchemy.org/en/14/core/future.html?highlight=select#sqlalchemy.future.select
-from gql_workflow.DBDefinitions import startEngine, ComposeConnectionString
+from DBDefinitions import startEngine, ComposeConnectionString
 
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
 # from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
 connectionString = ComposeConnectionString()
 
 from strawberry.asgi import GraphQL
-from gql_workflow.Dataloaders import createLoaders
+from utils.Dataloaders import createLoaders
 import logging
 
 appcontext = {}
@@ -30,7 +30,7 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def initEngine(app: FastAPI):
-    from gql_workflow.DBDefinitions import startEngine, ComposeConnectionString
+    from DBDefinitions import startEngine, ComposeConnectionString
 
     connectionstring = ComposeConnectionString()
 
@@ -42,7 +42,7 @@ async def initEngine(app: FastAPI):
 
     logging.info("engine started")
 
-    from gql_workflow.DBFeeder import initDB
+    from utils.DBFeeder import initDB
 
     await initDB(asyncSessionMaker)
 
@@ -50,7 +50,7 @@ async def initEngine(app: FastAPI):
     yield
 
 
-from gql_workflow._GraphTypeDefinitions import schema
+from GraphTypeDefinitions import schema
 
 app = FastAPI(lifespan=initEngine)
 
@@ -61,7 +61,7 @@ async def get_context():
         async with initEngine(app) as cntx:
             pass
 
-    from gql_workflow.Dataloaders import createLoadersContext
+    from utils.Dataloaders import createLoadersContext
 
     context = createLoadersContext(appcontext["asyncSessionMaker"])
     return context

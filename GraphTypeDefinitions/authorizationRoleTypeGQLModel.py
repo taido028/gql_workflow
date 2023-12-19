@@ -3,8 +3,6 @@ import strawberry
 from typing import List, Optional, Union, Annotated
 from uuid import UUID
 
-import gql_workflow.GraphTypeDefinitions
-
 
 def getLoaders(info):
     return info.context["all"]
@@ -50,7 +48,7 @@ class AuthorizationRoleTypeGQLModel:
     async def authorization(
         self, info: strawberry.types.Info
     ) -> Optional["AuthorizationGQLModel"]:
-        result = await gql_workflow.GraphTypeDefinitions.AuthorizationGQLModel.resolve_reference(
+        result = await AuthorizationGQLModel.resolve_reference(
             info, self.authorization_id
         )
         return result
@@ -61,14 +59,14 @@ class AuthorizationRoleTypeGQLModel:
     async def role_type(
         self, info: strawberry.types.Info
     ) -> Optional["RoleTypeGQLModel"]:
-        result = gql_workflow.GraphTypeDefinitions.RoleTypeGQLModel(id=self.roletype_id)
+        result = RoleTypeGQLModel(id=self.roletype_id)
         return result
 
     @strawberry.field(
         description="""Group where the user having appropriate role has this access"""
     )
     async def group(self, info: strawberry.types.Info) -> Optional["GroupGQLModel"]:
-        result = gql_workflow.GraphTypeDefinitions.GroupGQLModel(id=self.group_id)
+        result = GroupGQLModel(id=self.group_id)
         return result
 
 
@@ -113,7 +111,7 @@ async def authorization_add_role(
         group_id=authorization.group_id,
         roletype_id=authorization.roletype_id,
     )
-    result = gql_workflow.GraphTypeDefinitions.AuthorizationResultGQLModel()
+    result = AuthorizationResultGQLModel()
     result.msg = "ok"
     row = next(existing, None)
     if row is None:
@@ -138,7 +136,7 @@ async def authorization_remove_role(
         group_id=authorization.group_id,
         roletype_id=authorization.roletype_id,
     )
-    result = gql_workflow.GraphTypeDefinitions.AuthorizationResultGQLModel()
+    result = AuthorizationResultGQLModel()
     if existing is None:
         result.msg = "fail"
     else:

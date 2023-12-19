@@ -3,12 +3,23 @@ import strawberry
 from typing import List, Optional, Union, Annotated
 import typing
 from uuid import UUID
+import uuid
 
-import gql_workflow.GraphTypeDefinitions
 
+from sqlalchemy.util import typing
+from GraphTypeDefinitions.BaseGQLModel import BaseGQLModel
+from utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
 
-def getLoaders(info):
-    return info.context["all"]
+from GraphTypeDefinitions._GraphResolvers import (
+    resolve_id,
+    resolve_name,
+    resolve_valid,
+    resolve_lastchange,
+    resolve_createdby,
+    resolve_changedby,
+    createRootResolver_by_id,
+    createRootResolver_by_page,
+)
 
 
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".externals")]
@@ -27,48 +38,41 @@ WorkflowStateResultGQLModel = Annotated[
     keys=["id"],
     description="""Entity defining users with some rights for the state in dataflow (node in graph)""",
 )
-class WorkflowStateUserGQLModel:
-    @classmethod
-    async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
-        loader = getLoaders(info).workflowstateusers
-        result = await loader.load(id)
-        if result is not None:
-            result._type_definition = cls._type_definition  # little hack :)
+class WorkflowStateUserGQLModel(BaseGQLModel):
+    # @classmethod
+    # async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
+    #     loader = getLoaders(info).workflowstateusers
+    #     result = await loader.load(id)
+    #     if result is not None:
+    #         result._type_definition = cls._type_definition  # little hack :)
 
-            # some version of strawberry changed :(
-        return result
+    #         # some version of strawberry changed :(
+    #     return result
 
-    @strawberry.field(description="""primary key""")
-    def id(self) -> UUID:
-        return self.id
+    def getLoader(cls, info):
+        return getLoadersFromInfo(info).workflowstateusers
 
-    @strawberry.field(description="""Timestamp""")
-    def lastchange(self) -> UUID:
-        return self.lastchange
+    id = resolve_id
+    lastchange = resolve_lastchange
 
     @strawberry.field(description="""User""")
-    async def user(self, info: strawberry.types.Info) -> Union["UserGQLModel", None]:
-        result = await gql_workflow.GraphTypeDefinitions.UserGQLModel.resolve_reference(
-            id=self.user_id
-        )
-        return result
+    def user(self) -> Optional[UserGQLModel]:
+        from .externals import UserGQLModel
+
+        return UserGQLModel(id=self.user_id)
 
     @strawberry.field(description="""Group for which the user has some right""")
-    async def group(self, info: strawberry.types.Info) -> Union["GroupGQLModel", None]:
-        result = (
-            await gql_workflow.GraphTypeDefinitions.GroupGQLModel.resolve_reference(
-                id=self.group_id
-            )
-        )
-        return result
+    def group(self) -> Optional[GroupGQLModel]:
+        from .externals import GroupGQLModel
+
+        return GroupGQLModel(id=self.group_id)
 
     @strawberry.field(description="""State""")
     async def state(
         self, info: strawberry.types.Info
-    ) -> Union["WorkflowStateGQLModel", None]:
-        result = await gql_workflow.GraphTypeDefinitions.WorkflowStateGQLModel.resolve_reference(
-            info, self.workflowstate_id
-        )
+    ) -> Optional[WorkflowStateGQLModel]:
+        loader = getLoadersFromInfo(info).workflowstates
+        result = await loader.load(self.workflowstate_id)
         return result
 
 
@@ -77,21 +81,30 @@ class WorkflowStateUserGQLModel:
 # Special fields for query
 #
 #####################################################################
-@strawberry.field(description="""Gets a user of state in workflows """)
-async def workflow_state_user(
-    self, info: strawberry.types.Info, skip: int = 0, limit: int = 20
-) -> List["WorkflowStateUserGQLModel"]:
-    loader = getLoaders(info).workflowstateusers
-    result = await loader.page(skip=skip, limit=limit)
-    return result
+
+from dataclasses import dataclass
+from uoishelpers.resolvers import createInputs
 
 
-@strawberry.field(description="Retrieves a user of a state in workflow by its id")
-async def workflow_state_user_by_id(
-    self, info: strawberry.types.Info, id: UUID
-) -> typing.Optional[WorkflowStateUserGQLModel]:
-    result = await WorkflowStateUserGQLModel.resolve_reference(info=info, id=id)
-    return result
+@createInputs
+@dataclass
+class WorkflowStateUserWhereFilter:
+    workflowstate_id: typing.Optional[uuid.UUID]
+    user_id: typing.Optional[uuid.UUID]
+    group_id: typing.Optional[uuid.UUID]
+
+
+workflow_state_user = createRootResolver_by_page(
+    scalarType=WorkflowStateUserGQLModel,
+    whereFilterType=WorkflowStateUserWhereFilter,
+    description="""Returns users of workflow states by page""",
+    loaderLambda=lambda info: getLoadersFromInfo(info).workflowstateusers,
+)
+
+
+workflow_state_user_by_id = createRootResolver_by_id(
+    WorkflowStateUserGQLModel, description="""Returns workflow state user by ID"""
+)
 
 
 #####################################################################
@@ -101,7 +114,7 @@ async def workflow_state_user_by_id(
 #####################################################################
 
 
-@strawberry.input(description="""""")
+@strawberry.input(description="""Input structure - C and U operation""")
 class WorkflowStateAddUserGQLModel:
     workflowstate_id: UUID = strawberry.field(
         default=None, description="Identification of workflow state"
@@ -111,10 +124,10 @@ class WorkflowStateAddUserGQLModel:
         default=None,
         description="Identification of group for which the user has appropriate access level",
     )
-    accesslevel: int
+    accesslevel: int = strawberry.field(description="access level")
 
 
-@strawberry.input(description="""""")
+@strawberry.input(description="""D operation""")
 class WorkflowStateRemoveUserGQLModel:
     workflowstate_id: UUID = strawberry.field(
         default=None, description="Identification of workflow state"
@@ -132,13 +145,13 @@ class WorkflowStateRemoveUserGQLModel:
 async def workflow_state_add_user(
     self, info: strawberry.types.Info, payload: WorkflowStateAddUserGQLModel
 ) -> Optional["WorkflowStateResultGQLModel"]:
-    loader = getLoaders(info).workflowstateusers
+    loader = getLoadersFromInfo(info).workflowstateusers
     existing = await loader.filter_by(
         workflowstate_id=payload.workflowstate_id,
         user_id=payload.user_id,
         group_id=payload.group_id,
     )
-    result = gql_workflow.GraphTypeDefinitions.WorkflowStateResultGQLModel()
+    result = WorkflowStateResultGQLModel()
     result.msg = "ok"
     row = next(existing, None)
     if row is None:
@@ -157,14 +170,14 @@ async def workflow_state_add_user(
 async def workflow_state_remove_user(
     self, info: strawberry.types.Info, payload: WorkflowStateRemoveUserGQLModel
 ) -> Optional["WorkflowStateResultGQLModel"]:
-    loader = getLoaders(info).workflowstateusers
+    loader = getLoadersFromInfo(info).workflowstateusers
     existing = await loader.filter_by(
         workflowstate_id=payload.workflowstate_id,
         user_id=payload.user_id,
         group_id=payload.group_id,
     )
     existing = next(existing, None)
-    result = gql_workflow.GraphTypeDefinitions.WorkflowStateResultGQLModel()
+    result = WorkflowStateResultGQLModel()
     result.id = payload.workflowstate_id
     if existing is None:
         result.msg = "fail"
