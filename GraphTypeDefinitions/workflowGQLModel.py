@@ -63,10 +63,10 @@ class WorkflowGQLModel(BaseGQLModel):
 #####################################################################
 
 from dataclasses import dataclass
-# from uoishelpers.resolvers import createInputs
+from uoishelpers.resolvers import createInputs
 
 
-# @createInputs
+@createInputs
 @dataclass
 class WorkflowWhereFilter:
     name: str
