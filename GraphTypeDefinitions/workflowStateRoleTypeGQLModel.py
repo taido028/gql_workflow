@@ -79,10 +79,10 @@ class WorkflowStateRoleTypeGQLModel(BaseGQLModel):
 
 
 from dataclasses import dataclass
-from uoishelpers.resolvers import createInputs
+# from uoishelpers.resolvers import createInputs
 
 
-@createInputs
+# @createInputs
 @dataclass
 class WorkflowStateRoleTypeWhereFilter:
     workflowstate_id: typing.Optional[uuid.UUID]

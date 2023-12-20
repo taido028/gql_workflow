@@ -79,10 +79,10 @@ class WorkflowTransitionGQLModel(BaseGQLModel):
 #####################################################################
 
 from dataclasses import dataclass
-from uoishelpers.resolvers import createInputs
+# from uoishelpers.resolvers import createInputs
 
 
-@createInputs
+# @createInputs
 @dataclass
 class WorkflowStateTransitionWhereFilter:
     workflow_id: typing.Optional[uuid.UUID]

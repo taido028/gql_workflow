@@ -34,7 +34,7 @@ def CreateClientFunction():
 
 
 def updateIntrospectionQuery():
-    from introspection import query
+    from tests.introspection import query
 
     client = CreateClientFunction()
     inputjson = {"query": query, "variables": {}}
