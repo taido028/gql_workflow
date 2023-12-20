@@ -48,7 +48,8 @@ class WorkflowStateUserGQLModel(BaseGQLModel):
 
     #         # some version of strawberry changed :(
     #     return result
-
+    
+    @classmethod
     def getLoader(cls, info):
         return getLoadersFromInfo(info).workflowstateusers
 

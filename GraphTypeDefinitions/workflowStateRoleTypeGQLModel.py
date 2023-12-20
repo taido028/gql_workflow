@@ -38,7 +38,6 @@ RoleTypeGQLModel = Annotated["RoleTypeGQLModel", strawberry.lazy(".externals")]
     description="""Entity defining role types with some rights for the state in dataflow (node in graph)""",
 )
 class WorkflowStateRoleTypeGQLModel(BaseGQLModel):
-    @classmethod
     # async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
     #     loader = getLoaders(info).workflowstateusers
     #     result = await loader.load(id)
@@ -49,6 +48,7 @@ class WorkflowStateRoleTypeGQLModel(BaseGQLModel):
     #         )  # some version of strawberry changed :(
     #     return result
 
+    @classmethod
     def getLoader(cls, info):
         return getLoadersFromInfo(info).workflowstateroletypes
 

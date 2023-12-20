@@ -38,7 +38,6 @@ WorkflowStateRoleTypeGQLModel = Annotated[
     keys=["id"], description="""Entity defining a state in dataflow (node in graph)"""
 )
 class WorkflowStateGQLModel(BaseGQLModel):
-    @classmethod
     # async def resolve_reference(cls, info: strawberry.types.Info, id: UUID):
     #     loader = getLoaders(info).workflowstates
     #     result = await loader.load(id)
@@ -48,6 +47,8 @@ class WorkflowStateGQLModel(BaseGQLModel):
     #             cls._type_definition
     #         )  # some version of strawberry changed :(
     #     return result
+    
+    @classmethod
     def getLoader(cls, info):
         return getLoadersFromInfo(info).workflowstates
 

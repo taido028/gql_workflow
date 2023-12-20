@@ -71,7 +71,7 @@ def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
         variable_values = {"id": f'{data_row["id"]}'}
 
         append(
-            query_name=f"{queryEndpoint}_{tableName}",
+            queryname=f"{queryEndpoint}_{tableName}",
             query=query,
             variables=variable_values,
         )
@@ -115,7 +115,7 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id"]):
         content = "{" + ", ".join(attributeNames) + "}"
         query = "query{ " f"{queryEndpoint} {content}" "}"
 
-        append(query_name=f"{queryEndpoint}_{tableName}", query=query)
+        append(queryname=f"{queryEndpoint}_{tableName}", query=query)
 
         response = await schema_executor(query)
         test_result(response)
@@ -176,7 +176,7 @@ def createResolveReferenceTest(tableName: str, gqltype: str, attributeNames=["id
             response = await schema_executor(query, {**variable_values})
             test_result(response)
 
-        append(query_name=f"{gqltype}_representation", query=query)
+        append(queryname=f"{gqltype}_representation", query=query)
 
     return result_test
 

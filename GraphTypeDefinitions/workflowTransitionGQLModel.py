@@ -38,7 +38,8 @@ class WorkflowTransitionGQLModel(BaseGQLModel):
     #             cls._type_definition
     #         )  # some version of strawberry changed :(
     #     return result
-
+    
+    @classmethod
     def getLoader(cls, info):
         return getLoadersFromInfo(info).workflowtransitions
 
