@@ -27,7 +27,7 @@ def CreateClientFunction():
         response = client.post("/gql", headers=headers, json=json_data)
         return response.json()
 
-    return result
+    return client, result
 
 def updateIntrospectionQuery():
     from tests.introspection import query

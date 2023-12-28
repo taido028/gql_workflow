@@ -23,7 +23,7 @@ from DBDefinitions import (
 )
 
 
-from gql_workflow._GraphTypeDefinitions import schema
+from GraphTypeDefinitions import schema
 
 
 async def prepare_in_memory_sqllite():
@@ -56,10 +56,10 @@ async def prepare_demodata(async_session_maker):
     await ImportModels(
         async_session_maker,
         [
-            AuthorizationModel,
-            AuthorizationGroupModel,
-            AuthorizationUserModel,
-            AuthorizationRoleTypeModel,
+            # AuthorizationModel,
+            # AuthorizationGroupModel,
+            # AuthorizationUserModel,
+            # AuthorizationRoleTypeModel,
             WorkflowModel,
             WorkflowStateModel,
             WorkflowStateRoleTypeModel,

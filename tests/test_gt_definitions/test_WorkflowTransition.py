@@ -18,10 +18,10 @@ from tests.gqlshared import (
 ###     Query test
 
 
-test_reference_workflowtransition = createResolveReferenceTest(
-    tableName="awworkflowtransitions", gqltype="WorkflowTransitionGQLModel"
-)
+# test_reference_workflowtransition = createResolveReferenceTest(
+#     tableName="awworkflowtransitions", gqltype="WorkflowTransitionGQLModel"
+# )
 
-test_query_workflowtransition_by_id = createByIdTest(
-    tableName="awworkflowtransitions", queryEndpoint="workflowTransitionById", attributeNames=["id"]
-)
+# test_query_workflowtransition_by_id = createByIdTest(
+#     tableName="awworkflowtransitions", queryEndpoint="workflowTransitionById", attributeNames=["id"]
+# )

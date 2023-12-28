@@ -11,7 +11,7 @@ from tests.gqlshared import (
     createPageTest,
     createResolveReferenceTest,
     createFrontendQuery,
-    createUpdateQuery,
+    
 )
 
 ###     Query test
@@ -32,12 +32,12 @@ test_query_workflow_by_id = createByIdTest(
 
 
 test_insert_workflow = createFrontendQuery(
-    query="""mutation($name: string!) {
-        result: workflowInsert(workflow: {name: $string}) {
-            name
+    query="""mutation($id: UUID! , $name: String!) {
+        result: workflowInsert(workflow: {id: $id, name: $name}) {
+            id
             msg
         }
     }""",
-    variables={"name": "another workflow"},
-    asserts=[],
+    variables={"id": "8299eeeb-99e7-4364-8cc2-88b83f900d34" ,"name": "another workflowss"},
+   
 )

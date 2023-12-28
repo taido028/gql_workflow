@@ -7,7 +7,7 @@ import json
 import pytest
 import re
 
-from gql_workflow._GraphTypeDefinitions import schema
+from GraphTypeDefinitions import schema
 
 from .shared import (
     prepare_demodata,
@@ -61,7 +61,7 @@ def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
                 assert response_data[attribute] == f"{data_row[attribute]}"
 
         schema_executor = CreateSchemaFunction()
-        client_executor = CreateClientFunction()
+        _, client_executor = CreateClientFunction()
 
         data = get_demodata()
         data_row = data[tableName][0]
@@ -108,7 +108,7 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id"]):
                     assert row_a[attribute] == f"{row_b[attribute]}"
 
         schema_executor = CreateSchemaFunction()
-        client_executor = CreateClientFunction()
+        _, client_executor = CreateClientFunction()
 
         data = get_demodata()
 
@@ -149,7 +149,7 @@ def createResolveReferenceTest(tableName: str, gqltype: str, attributeNames=["id
             assert response_data["id"] == row_id
 
         schema_executor = CreateSchemaFunction()
-        client_executor = CreateClientFunction()
+        _, client_executor = CreateClientFunction()
 
         content = "{" + ", ".join(attributeNames) + "}"
 

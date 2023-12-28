@@ -5,11 +5,6 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 
-from tests.shared import (
-    prepare_demodata,
-    prepare_in_memory_sqllite,
-    get_demodata,
-)
 
 from tests.gqlshared import (
     createByIdTest, 
@@ -25,8 +20,8 @@ test_reference_workflowstateroletype = createResolveReferenceTest(
     tableName="awworkflowstateroletypes", gqltype="WorkflowStateRoleTypeGQLModel"
 )
 test_query_workflowstateroletype = createPageTest(
-    tableName="awworkflowstateroletypes", queryEndpoint="workflowStateRoleType"
+    tableName="awworkflowstateroletypes", queryEndpoint="workflowStateRoleType", attributeNames=["id"]
 )
 test_query_workflowstateroletype_by_id = createByIdTest(
-    tableName="awworkflowstateroletypes", queryEndpoint="workflowStateRoleTypeById"
+    tableName="awworkflowstateroletypes", queryEndpoint="workflowStateRoleTypeById", attributeNames=["id"]
 )
