@@ -11,6 +11,7 @@ from tests.gqlshared import (
     createPageTest,
     createResolveReferenceTest,
     createFrontendQuery,
+    createUpdateQuery,
     
 )
 
@@ -40,4 +41,18 @@ test_insert_workflow = createFrontendQuery(
     }""",
     variables={"id": "8299eeeb-99e7-4364-8cc2-88b83f900d34" ,"name": "another workflowss"},
    
+)
+
+
+test_update_workflow = createUpdateQuery(
+    query="""mutation ($lastchange: DateTime!, $id: UUID!, $name: String!) {
+        result: workflowUpdate(
+            workflow: {lastchange: $lastchange, id: $id, name: $name}) {
+                id
+                msg
+            }
+        }""",
+    variables={"id": "8299eeeb-99e7-4364-8cc2-88b83f900d32" ,"name": "testflow" },
+    tableName="awworkflows",
+    
 )
