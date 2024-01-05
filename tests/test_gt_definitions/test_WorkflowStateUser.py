@@ -23,3 +23,8 @@ test_query_workflowstateuser = createPageTest(
 test_query_workflowstateuser_by_id = createByIdTest(
     tableName="awworkflowstateusers", queryEndpoint="workflowStateUserById", attributeNames=["id"]
 )
+
+
+
+###     Mutation test
+

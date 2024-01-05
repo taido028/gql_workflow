@@ -49,7 +49,7 @@ test_insert_workflowstate = createFrontendQuery(
 
 
 test_update_workflowstate = createUpdateQuery(
-    query="""mutation ($id:UUID!, $name:String!, $lastchange:DateTime!){
+    query="""mutation ($id: UUID!, $name: String!, $lastchange: DateTime!){
         result: workflowStateUpdate(state:{lastchange: $lastchange, id: $id, name: $name}) {
             id
             msg

@@ -45,11 +45,16 @@ test_insert_workflow = createFrontendQuery(
 
 
 test_update_workflow = createUpdateQuery(
-    query="""mutation ($lastchange: DateTime!, $id: UUID!, $name: String!) {
+    query="""mutation ($id: UUID!, $name: String!, $lastchange: DateTime!){
         result: workflowUpdate(
             workflow: {lastchange: $lastchange, id: $id, name: $name}) {
                 id
                 msg
+                workflow{
+                    id
+                    name
+                    lastchange
+                }
             }
         }""",
     variables={"id": "8299eeeb-99e7-4364-8cc2-88b83f900d32" ,"name": "testflow" },

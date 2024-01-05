@@ -138,7 +138,8 @@ async def workflow_state_add_role(
 ) -> Optional["WorkflowStateResultGQLModel"]:
     loader = getLoadersFromInfo(info).workflowstateroletypes
     existing = await loader.filter_by(
-        workflowstate_id=payload.workflowstate_id, roletype_id=payload.roletype_id
+        workflowstate_id=payload.workflowstate_id,
+        roletype_id=payload.roletype_id,
     )
     result = WorkflowStateResultGQLModel()
     result.msg = "ok"
@@ -161,7 +162,8 @@ async def workflow_state_remove_role(
 ) -> Optional["WorkflowStateResultGQLModel"]:
     loader = getLoadersFromInfo(info).workflowstateroletypes
     existing = await loader.filter_by(
-        workflowstate_id=payload.workflowstate_id, roletype_id=payload.roletype_id
+        workflowstate_id=payload.workflowstate_id, 
+        roletype_id=payload.roletype_id,
     )
     existing = next(existing, None)
     result = WorkflowStateResultGQLModel()
