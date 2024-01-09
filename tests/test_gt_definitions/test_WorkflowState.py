@@ -20,7 +20,7 @@ from tests.gqlshared import(
 ###     Query test
 
 test_reference_workflowstate = createResolveReferenceTest(
-    tableName="awworkflowstates", gqltype="WorkflowStateGQLModel"
+    tableName="awworkflowstates", gqltype="WorkflowStateGQLModel", attributeNames=["id"]
 )
 test_query_workflowstate = createPageTest(
     tableName="awworkflowstates", queryEndpoint="workflowState", attributeNames=["id"]

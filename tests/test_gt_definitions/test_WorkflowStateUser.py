@@ -8,14 +8,17 @@ import pytest
 from tests.gqlshared import(
     createByIdTest,
     createPageTest,
-    createResolveReferenceTest)
+    createResolveReferenceTest,
+    createFrontendQuery,
+    
+    )
 
 
 ###     Query test
 
 
 test_reference_workflowstateuser = createResolveReferenceTest(
-    tableName="awworkflowstateusers", gqltype="WorkflowStateUserGQLModel"
+    tableName="awworkflowstateusers", gqltype="WorkflowStateUserGQLModel", attributeNames=["id"]
 )
 test_query_workflowstateuser = createPageTest(
     tableName="awworkflowstateusers", queryEndpoint="workflowStateUser", attributeNames=["id"]
@@ -28,3 +31,25 @@ test_query_workflowstateuser_by_id = createByIdTest(
 
 ###     Mutation test
 
+
+test_add_workflowstateuser = createFrontendQuery(
+    query="""mutation ($wid: UUID!, $uid: UUID!, $gid: UUID!, $al:Int!){
+        result: workflowStateAddUser(payload:{workflowstateId: $wid, userId: $uid, groupId: $gid, accesslevel: $al}){
+            id
+            msg
+            state{
+                id
+                name
+                lastchange
+                roletypes{
+                    id
+                    accesslevel
+                    roleType{
+                        id
+                    }
+                }
+            }
+        }
+    }""",
+    variables={"wid": "eb46ece6-be1b-4142-a5c5-0aac31e681f0", "gid": "f8a46c25-73e2-4d43-bb54-471570be3657", "uid": "f8a46c25-73e2-4d43-bb54-471570be3657", "al": 2}
+)

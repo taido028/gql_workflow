@@ -171,9 +171,9 @@ async def workflow_transition_insert(
 ) -> WorkflowTransitionResultGQLModel:
     loader = getLoadersFromInfo(info).workflowtransitions
     row = await loader.insert(state)
-    result = WorkflowTransitionResultGQLModel()
-    result.msg = "ok"
-    result.id = row.id
+    result = WorkflowTransitionResultGQLModel(msg = "ok", id = row.id)
+    # result.msg = "ok"
+    # result.id = row.id
     return result
 
 
@@ -183,9 +183,9 @@ async def workflow_transition_update(
 ) -> WorkflowTransitionResultGQLModel:
     loader = getLoadersFromInfo(info).workflowtransitions
     row = await loader.update(state)
-    result = WorkflowTransitionResultGQLModel()
-    result.msg = "ok"
-    result.id = state.id
+    result = WorkflowTransitionResultGQLModel(msg = "ok", id = state.id)
+    # result.msg = "ok"
+    # result.id = state.id
     if row is None:
         result.msg = "fail"
 
