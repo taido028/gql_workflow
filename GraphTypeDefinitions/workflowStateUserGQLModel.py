@@ -21,6 +21,10 @@ from GraphTypeDefinitions._GraphResolvers import (
     createRootResolver_by_page,
 )
 
+from GraphTypeDefinitions.workflowStateGQLModel import (
+    WorkflowStateResultGQLModel,
+    
+)
 
 UserGQLModel = Annotated["UserGQLModel", strawberry.lazy(".externals")]
 GroupGQLModel = Annotated["GroupGQLModel", strawberry.lazy(".externals")]
@@ -29,9 +33,9 @@ WorkflowGQLModel = Annotated["WorkflowGQLModel", strawberry.lazy(".workflowGQLMo
 WorkflowStateGQLModel = Annotated[
     "WorkflowStateGQLModel", strawberry.lazy(".workflowStateGQLModel")
 ]
-WorkflowStateResultGQLModel = Annotated[
-    "WorkflowStateResultGQLModel", strawberry.lazy(".workflowStateGQLModel")
-]
+# WorkflowStateResultGQLModel = Annotated[
+#     "WorkflowStateResultGQLModel", strawberry.lazy(".workflowStateGQLModel")
+# ]
 
 
 @strawberry.federation.type(
@@ -146,18 +150,24 @@ class WorkflowStateRemoveUserGQLModel:
 async def workflow_state_add_user(
     self, info: strawberry.types.Info, payload: WorkflowStateAddUserGQLModel
 ) -> Optional["WorkflowStateResultGQLModel"]:
+    
     loader = getLoadersFromInfo(info).workflowstateusers
+    
     existing = await loader.filter_by(
         workflowstate_id=payload.workflowstate_id,
         user_id=payload.user_id,
         group_id=payload.group_id,
     )
-    result = WorkflowStateResultGQLModel()
-    result.msg = "ok"
+    
+    result = WorkflowStateResultGQLModel(msg = "ok", id = "")
+    # result.msg = "ok"
+    
     row = next(existing, None)
+    
     if row is None:
         row = await loader.insert(payload)
         result.id = payload.workflowstate_id
+        
     else:
         row = await loader.update(row, {"accesslevel": payload.accesslevel})
         if row is None:
@@ -171,15 +181,20 @@ async def workflow_state_add_user(
 async def workflow_state_remove_user(
     self, info: strawberry.types.Info, payload: WorkflowStateRemoveUserGQLModel
 ) -> Optional["WorkflowStateResultGQLModel"]:
+    
     loader = getLoadersFromInfo(info).workflowstateusers
+    
     existing = await loader.filter_by(
         workflowstate_id=payload.workflowstate_id,
         user_id=payload.user_id,
         group_id=payload.group_id,
     )
+    
     existing = next(existing, None)
-    result = WorkflowStateResultGQLModel()
-    result.id = payload.workflowstate_id
+    
+    result = WorkflowStateResultGQLModel(msg = "", id = payload.workflowstate_id)
+    
+    # result.id = payload.workflowstate_id
     if existing is None:
         result.msg = "fail"
     else:

@@ -22,14 +22,18 @@ from GraphTypeDefinitions._GraphResolvers import (
     createRootResolver_by_page,
 )
 
+from GraphTypeDefinitions.workflowStateGQLModel import (
+    WorkflowStateResultGQLModel,
+    
+)
 
 WorkflowGQLModel = Annotated["WorkflowGQLModel", strawberry.lazy(".workflowGQLModel")]
 WorkflowStateGQLModel = Annotated[
     "WorkflowStateGQLModel", strawberry.lazy(".workflowStateGQLModel")
 ]
-WorkflowStateResultGQLModel = Annotated[
-    "WorkflowStateResultGQLModel", strawberry.lazy(".workflowStateGQLModel")
-]
+# WorkflowStateResultGQLModel = Annotated[
+#     "WorkflowStateResultGQLModel", strawberry.lazy(".workflowStateGQLModel")
+# ]
 RoleTypeGQLModel = Annotated["RoleTypeGQLModel", strawberry.lazy(".externals")]
 
 
@@ -131,22 +135,28 @@ class WorkflowStateRemoveRoleGQLModel:
         default=None, description="Identification of role type"
     )
 
-
 @strawberry.mutation(description="""Adds or updates role at the workflow state""")
 async def workflow_state_add_role(
     self, info: strawberry.types.Info, payload: WorkflowStateAddRoleGQLModel
 ) -> Optional["WorkflowStateResultGQLModel"]:
+    
     loader = getLoadersFromInfo(info).workflowstateroletypes
+    
     existing = await loader.filter_by(
         workflowstate_id=payload.workflowstate_id,
         roletype_id=payload.roletype_id,
     )
-    result = WorkflowStateResultGQLModel()
-    result.msg = "ok"
+    
+    result = WorkflowStateResultGQLModel(msg = "ok", id = "")
+    
+    # result.msg = "ok"
+    
     row = next(existing, None)
+    
     if row is None:
         row = await loader.insert(payload)
         result.id = payload.workflowstate_id
+        
     else:
         row = await loader.update(row, {"accesslevel": payload.accesslevel})
         if row is None:
@@ -160,14 +170,19 @@ async def workflow_state_add_role(
 async def workflow_state_remove_role(
     self, info: strawberry.types.Info, payload: WorkflowStateRemoveRoleGQLModel
 ) -> Optional["WorkflowStateResultGQLModel"]:
+    
     loader = getLoadersFromInfo(info).workflowstateroletypes
+    
     existing = await loader.filter_by(
-        workflowstate_id=payload.workflowstate_id, 
-        roletype_id=payload.roletype_id,
+        workflowstate_id = payload.workflowstate_id, 
+        roletype_id = payload.roletype_id,
     )
+    
     existing = next(existing, None)
-    result = WorkflowStateResultGQLModel()
-    result.id = payload.workflowstate_id
+    
+    result = WorkflowStateResultGQLModel(id = payload.workflowstate_id, msg = "ok")
+    # result.id = payload.workflowstate_id
+    
     if existing is None:
         result.msg = "fail"
     else:
