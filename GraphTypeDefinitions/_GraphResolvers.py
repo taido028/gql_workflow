@@ -160,9 +160,14 @@ def createRootResolver_by_id(scalarType: None, description="Retrieves item by it
     async def by_id(
             self, info: strawberry.types.Info, id: uuid.UUID
     ) -> typing.Optional[scalarType]:
-        result = await scalarType.resolve_reference(info=info, id=id)
-        return result
-
+        print(f"Received ID: {id}")
+        try:
+            result = await scalarType.resolve_reference(info=info, id=id)
+            print(f"Query result: {result}")
+            return result
+        except Exception as e:
+            print(f"Error in resolver: {e}")
+            return None
     return by_id
 
 

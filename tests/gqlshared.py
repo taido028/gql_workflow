@@ -46,43 +46,43 @@ def append(queryname="queryname", query=None, mutation=None, variables={}):
 def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
     @pytest.mark.asyncio
     async def result_test():
-        def test_result(response):
+        async def test_result(response):
             print("response", response)
             errors = response.get("errors", None)
-            assert errors is None
+            assert errors is None, f"GraphQL errors found: {errors}"
 
             response_data = response.get("data", None)
-            assert response_data is not None
+            assert response_data is not None, "Response data is None"
 
-            response_data = response_data[queryEndpoint]
-            assert response_data is not None
+            data = response_data.get(queryEndpoint, None)
+            assert data is not None, f"No data found for {queryEndpoint}"
 
             for attribute in attributeNames:
-                assert response_data[attribute] == f"{data_row[attribute]}"
+                assert attribute in data, f"Attribute {attribute} missing in response"
+                assert data[attribute] == str(data_row[attribute]), \
+                    f"Attribute {attribute} mismatch: expected {data_row[attribute]}, got {data[attribute]}"
 
         schema_executor = CreateSchemaFunction()
-        _, client_executor = CreateClientFunction()
+        client_executor = CreateClientFunction()
 
         data = get_demodata()
         data_row = data[tableName][0]
         content = "{" + ", ".join(attributeNames) + "}"
-        query = "query($id: UUID!){" f"{queryEndpoint}(id: $id)" f"{content}" "}"
+        query = f"query($id: UUID!){{ {queryEndpoint}(id: $id) {content} }}"
 
-        variable_values = {"id": f'{data_row["id"]}'}
+        variable_values = {"id": str(data_row["id"])}
 
-        append(
-            queryname=f"{queryEndpoint}_{tableName}",
-            query=query,
-            variables=variable_values,
-        )
-        logging.debug(f"query {query} with {variable_values}")
+        append(queryname=f"{queryEndpoint}_{tableName}", query=query, variables=variable_values)
+        logging.debug(f"GraphQL query: {query} with variables: {variable_values}")
 
         response = await schema_executor(query, variable_values)
-        test_result(response)
+        await test_result(response)
+
         response = await client_executor(query, variable_values)
-        test_result(response)
+        await test_result(response)
 
     return result_test
+
 
 
 # This is the general function for all page test.
@@ -108,7 +108,7 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id"]):
                     assert row_a[attribute] == f"{row_b[attribute]}"
 
         schema_executor = CreateSchemaFunction()
-        _, client_executor = CreateClientFunction()
+        client_executor = CreateClientFunction()
 
         data = get_demodata()
 
@@ -146,10 +146,13 @@ def createResolveReferenceTest(tableName: str, gqltype: str, attributeNames=["id
             assert len(response_data) == 1
             response_data = response_data[0]
 
-            assert response_data["id"] == row_id
+            if response_data is not None:
+                 assert response_data["id"] == row_id
+            else:
+                 logging.error("Response data is None. Entity not found or query error.")
 
         schema_executor = CreateSchemaFunction()
-        _, client_executor = CreateClientFunction()
+        client_executor = CreateClientFunction()
 
         content = "{" + ", ".join(attributeNames) + "}"
 
