@@ -10,6 +10,7 @@ from tests.gqlshared import(
     createPageTest,
     createResolveReferenceTest,
     createFrontendQuery,
+    # createRemoveQuery,
     
     )
 
@@ -51,5 +52,31 @@ test_add_workflowstateuser = createFrontendQuery(
             }
         }
     }""",
-    variables={"wid": "eb46ece6-be1b-4142-a5c5-0aac31e681f0", "gid": "f8a46c25-73e2-4d43-bb54-471570be3657", "uid": "f8a46c25-73e2-4d43-bb54-471570be3657", "al": 2}
+    variables={"wid": "eb46ece6-be1b-4142-a5c5-0aac31e681f0", "gid": "f8a46c25-73e2-4d43-bb54-471570be3657", "uid": "f8a46c25-73e2-4d43-bb54-471570be3657", "al": 2},
 )
+
+
+
+test_remove_workflowstateuser = createFrontendQuery(
+    query="""mutation ($workflowstate_id: UUID!, $user_id: UUID!, $groupId: UUID!){
+        result: workflowStateRemoveUser(payload:{workflowstateId: $workflowstate_id, userId: $user_id, groupId: $groupId}){
+            id
+            msg
+            state{
+                id
+                name
+                lastchange
+                roletypes{
+                    id
+                    accesslevel
+                    roleType{
+                        id
+                    }
+                }
+            }
+        }
+    }""",
+    variables={"workflowstate_id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0", "groupId": "f8a46c25-73e2-4d43-bb54-471570be3657", "user_id": "f8a46c25-73e2-4d43-bb54-471570be3657"}
+)
+
+

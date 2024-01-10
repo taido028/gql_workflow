@@ -188,6 +188,7 @@ def createResolveReferenceTest(tableName: str, gqltype: str, attributeNames=["id
 
 # This is the general function for insert mutation test.
 
+# For remove and insert !
 
 def createFrontendQuery(query="{}", variables={}, asserts=[]):
     @pytest.mark.asyncio

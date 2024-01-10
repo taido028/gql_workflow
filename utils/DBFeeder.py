@@ -151,6 +151,10 @@ async def initDB(asyncSessionMaker):
             WorkflowStateRoleTypeModel,
             WorkflowStateUserModel,
             WorkflowTransitionModel,
+            # AuthorizationModel,
+            # AuthorizationGroupModel,
+            # AuthorizationRoleTypeModel,
+            # AuthorizationUserModel,
         ]
     else:
         dbModels = [
@@ -159,6 +163,10 @@ async def initDB(asyncSessionMaker):
             WorkflowStateRoleTypeModel,
             WorkflowStateUserModel,
             WorkflowTransitionModel,
+            # AuthorizationModel,
+            # AuthorizationGroupModel,
+            # AuthorizationRoleTypeModel,
+            # AuthorizationUserModel,
         ]
 
     jsonData = get_demodata()
