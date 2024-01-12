@@ -235,7 +235,7 @@ def createUpdateQuery(query="{}", variables={}, tableName=""):
         async_session_maker = await prepare_in_memory_sqllite()
         await prepare_demodata(async_session_maker)
 
-        print("variables['id']", variables, flush=True)
+        print("variables['id']", variables)
         statement = sqlalchemy.text(
             f"SELECT id, lastchange FROM {tableName} WHERE id=:id"
         ).bindparams(id=variables["id"])
@@ -245,10 +245,13 @@ def createUpdateQuery(query="{}", variables={}, tableName=""):
             rows = await session.execute(statement)
             row = rows.first()
 
-            print("row", row)
-            id = row[0]
-            lastchange = row[1]
-
+            if row is None:
+                logging.error(f"No row found with id {variables['id']}")
+                return
+            
+            id, lastchange =row
+            variables["lastchange"] = lastchange.format()
+            variables["id"] = str(id)
             print(id, lastchange)
 
         variables["lastchange"] = lastchange
