@@ -64,6 +64,7 @@ async def prepare_demodata(async_session_maker):
             WorkflowStateModel,
             WorkflowStateRoleTypeModel,
             WorkflowStateUserModel,
+            WorkflowTransitionModel # MISSING THIS
         ],
         data,
     )
@@ -114,11 +115,11 @@ def CreateSchemaFunction():
         async_session_maker = await prepare_in_memory_sqllite()
         await prepare_demodata(async_session_maker)
         context_value = createLoadersContext(async_session_maker)
-        logging.debug(f"query for {query} with {variables}")
-        print(f"query for {query} with {variables}")
+        logging.debug(f"SCHEMA query for {query} with {variables}")
         resp = await schema.execute(
             query=query, variable_values=variables, context_value=context_value
         )
+        print(f"SCHEMA query for \n{query} \nwith \n{variables} \ngot\n{resp}")
 
         assert resp.errors is None
         respdata = resp.data
