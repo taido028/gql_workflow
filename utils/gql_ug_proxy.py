@@ -1,4 +1,4 @@
-import aiohttp
+
 import requests
 import os
 from contextlib import asynccontextmanager
