@@ -5,14 +5,22 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 
-from tests.gqlshared import(
-    createByIdTest,
-    createPageTest,
-    createResolveReferenceTest,
-    createFrontendQuery,
-    # createRemoveQuery,
+# from tests.gqlshared import(
+#     createByIdTest,
+#     createPageTest,
+#     createResolveReferenceTest,
+#     createFrontendQuery,
+#     # createRemoveQuery,
     
-    )
+#     )
+
+from .gt_utils import (
+    createByIdTest, 
+    createPageTest, 
+    createResolveReferenceTest, 
+    createFrontendQuery, 
+    createUpdateQuery
+)
 
 
 ###     Query test

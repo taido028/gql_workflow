@@ -6,14 +6,22 @@ import pytest
 
 
 
-from tests.gqlshared import (
+# from tests.gqlshared import (
+#     createByIdTest, 
+#     createPageTest, 
+#     createResolveReferenceTest,
+#     createFrontendQuery,
+#     createUpdateQuery,
+    
+#     )
+
+from .gt_utils import (
     createByIdTest, 
     createPageTest, 
-    createResolveReferenceTest,
-    createFrontendQuery,
-    createUpdateQuery,
-    
-    )
+    createResolveReferenceTest, 
+    createFrontendQuery, 
+    createUpdateQuery
+)
 
 
 ###     Query test
