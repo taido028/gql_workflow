@@ -6,6 +6,7 @@ from uuid import UUID
 
 from .BaseGQLModel import BaseGQLModel
 from utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
+from ._GraphPermissions import OnlyForAuthentized
 
 from GraphTypeDefinitions._GraphResolvers import (
     resolve_id,
@@ -13,6 +14,7 @@ from GraphTypeDefinitions._GraphResolvers import (
     resolve_name,
     createRootResolver_by_id,
     createRootResolver_by_page,
+    
 )
 
 
@@ -39,7 +41,7 @@ class WorkflowGQLModel(BaseGQLModel):
     name = resolve_name
     lastchange = resolve_lastchange
 
-    @strawberry.field(description="""Proxy states attached to this workflow""")
+    @strawberry.field(description="""Proxy states attached to this workflow""", permission_classes=[OnlyForAuthentized(isList=True)] )
     async def states(
         self, info: strawberry.types.Info
     ) -> List["WorkflowStateGQLModel"]:
@@ -47,7 +49,7 @@ class WorkflowGQLModel(BaseGQLModel):
         result = await loader.filter_by(workflow_id=self.id)
         return result
 
-    @strawberry.field(description="""Proxy transitions attached to this workflow""")
+    @strawberry.field(description="""Proxy transitions attached to this workflow""", permission_classes=[OnlyForAuthentized(isList=True)])
     async def transitions(
         self, info: strawberry.types.Info
     ) -> List["WorkflowTransitionGQLModel"]:
@@ -89,7 +91,7 @@ workflow_page = createRootResolver_by_page(
 # Mutation section
 #
 #####################################################################
-
+from ._GraphPermissions import OnlyForAuthentized
 
 @strawberry.input(description="""Definition of workflow added to entity""")
 class WorkflowInsertGQLModel:
@@ -129,7 +131,7 @@ class WorkflowResultGQLModel:
         return result
 
 
-@strawberry.mutation(description="""Creates a new workflow""")
+@strawberry.mutation(description="""Creates a new workflow""", permission_classes=[OnlyForAuthentized()])
 async def workflow_insert(
     self, info: strawberry.types.Info, workflow: WorkflowInsertGQLModel
 ) -> WorkflowResultGQLModel:
@@ -140,7 +142,7 @@ async def workflow_insert(
     return result
 
 
-@strawberry.mutation(description="""Updates a new workflow""")
+@strawberry.mutation(description="""Updates a new workflow""", permission_classes=[OnlyForAuthentized()])
 async def workflow_update(
     self, info: strawberry.types.Info, workflow: WorkflowUpdateGQLModel
 ) -> WorkflowResultGQLModel:

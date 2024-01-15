@@ -9,6 +9,7 @@ import uuid
 from sqlalchemy.util import typing
 from GraphTypeDefinitions.BaseGQLModel import BaseGQLModel
 from utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
+from._GraphPermissions import OnlyForAuthentized
 
 from GraphTypeDefinitions._GraphResolvers import (
     resolve_id,
@@ -60,7 +61,7 @@ class WorkflowStateRoleTypeGQLModel(BaseGQLModel):
     lastchange = resolve_lastchange
     accesslevel = resolve_accesslevel
 
-    @strawberry.field(description="""State""")
+    @strawberry.field(description="""State""", permission_classes=[OnlyForAuthentized()])
     async def state(
         self, info: strawberry.types.Info
     ) -> Optional["WorkflowStateGQLModel"]:
@@ -68,7 +69,7 @@ class WorkflowStateRoleTypeGQLModel(BaseGQLModel):
         result = await loader.load(self.workflowstate_id)
         return result
 
-    @strawberry.field(description="""Role type with some rights""")
+    @strawberry.field(description="""Role type with some rights""", permission_classes=[OnlyForAuthentized()])
     def role_type(self) -> Optional["RoleTypeGQLModel"]:
         from .externals import RoleTypeGQLModel
 
@@ -135,7 +136,7 @@ class WorkflowStateRemoveRoleGQLModel:
         default=None, description="Identification of role type"
     )
 
-@strawberry.mutation(description="""Adds or updates role at the workflow state""")
+@strawberry.mutation(description="""Adds or updates role at the workflow state""", permission_classes=[OnlyForAuthentized()])
 async def workflow_state_add_role(
     self, info: strawberry.types.Info, payload: WorkflowStateAddRoleGQLModel
 ) -> Optional["WorkflowStateResultGQLModel"]:
@@ -166,7 +167,7 @@ async def workflow_state_add_role(
     return result
 
 
-@strawberry.mutation(description="""Remove the role from the workflow state""")
+@strawberry.mutation(description="""Remove the role from the workflow state""", permission_classes=[OnlyForAuthentized()])
 async def workflow_state_remove_role(
     self, info: strawberry.types.Info, payload: WorkflowStateRemoveRoleGQLModel
 ) -> Optional["WorkflowStateResultGQLModel"]:

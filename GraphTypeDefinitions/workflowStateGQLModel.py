@@ -8,6 +8,7 @@ from uuid import UUID
 from sqlalchemy.util import typing
 from GraphTypeDefinitions.BaseGQLModel import BaseGQLModel
 from utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
+from ._GraphPermissions import OnlyForAuthentized
 
 from GraphTypeDefinitions._GraphResolvers import (
     resolve_id,
@@ -59,7 +60,7 @@ class WorkflowStateGQLModel(BaseGQLModel):
     createdby = resolve_createdby
     changedby = resolve_changedby
 
-    @strawberry.field(description="""outcomming transitions""")
+    @strawberry.field(description="""outcomming transitions""", permission_classes=[OnlyForAuthentized(isList=True)])
     async def next_transitions(
         self, info: strawberry.types.Info
     ) -> List["WorkflowTransitionGQLModel"]:
@@ -67,7 +68,7 @@ class WorkflowStateGQLModel(BaseGQLModel):
         result = await loader.filter_by(sourcestate_id=self.id)
         return result
 
-    @strawberry.field(description="""incomming transitions""")
+    @strawberry.field(description="""incomming transitions""", permission_classes=[OnlyForAuthentized(isList=True)])
     async def previous_transitions(
         self, info: strawberry.types.Info
     ) -> List["WorkflowTransitionGQLModel"]:
@@ -75,7 +76,7 @@ class WorkflowStateGQLModel(BaseGQLModel):
         result = await loader.filter_by(destinationstate_id=self.id)
         return result
 
-    @strawberry.field(description="""User rights""")
+    @strawberry.field(description="""User rights""", permission_classes=[OnlyForAuthentized(isList=True)])
     async def users(
         self, info: strawberry.types.Info
     ) -> List["WorkflowStateUserGQLModel"]:
@@ -83,7 +84,7 @@ class WorkflowStateGQLModel(BaseGQLModel):
         result = await loader.filter_by(workflowstate_id=self.id)
         return result
 
-    @strawberry.field(description="""User rights""")
+    @strawberry.field(description="""User rights""", permission_classes=[OnlyForAuthentized(isList=True)])
     async def roletypes(
         self, info: strawberry.types.Info
     ) -> List["WorkflowStateRoleTypeGQLModel"]:
@@ -91,7 +92,7 @@ class WorkflowStateGQLModel(BaseGQLModel):
         result = await loader.filter_by(workflowstate_id=self.id)
         return result
 
-    @strawberry.field(description="""The owning workflow""")
+    @strawberry.field(description="""The owning workflow""", permission_classes=[OnlyForAuthentized()])
     async def workflow(
         self, info: strawberry.types.Info
     ) -> Optional["WorkflowGQLModel"]:
@@ -176,7 +177,7 @@ class WorkflowStateResultGQLModel:
         return result
 
 
-@strawberry.mutation(description="Create a new state of workflow")
+@strawberry.mutation(description="Create a new state of workflow", permission_classes=[OnlyForAuthentized()])
 async def workflow_state_insert(
     self, info: strawberry.types.Info, state: WorkflowStateInsertGQLModel
 ) -> WorkflowStateResultGQLModel:
@@ -187,7 +188,7 @@ async def workflow_state_insert(
     return result
 
 
-@strawberry.mutation
+@strawberry.mutation( description="U operation", permission_classes=[OnlyForAuthentized()])
 async def workflow_state_update(
     self, info: strawberry.types.Info, state: WorkflowStateUpdateGQLModel
 ) -> WorkflowStateResultGQLModel:

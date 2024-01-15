@@ -9,6 +9,7 @@ import uuid
 from sqlalchemy.util import typing
 from GraphTypeDefinitions.BaseGQLModel import BaseGQLModel
 from utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
+from._GraphPermissions import OnlyForAuthentized
 
 from GraphTypeDefinitions._GraphResolvers import (
     resolve_id,
@@ -60,19 +61,19 @@ class WorkflowStateUserGQLModel(BaseGQLModel):
     id = resolve_id
     lastchange = resolve_lastchange
 
-    @strawberry.field(description="""User""")
+    @strawberry.field(description="""User""", permission_classes=[OnlyForAuthentized()])
     def user(self) -> Optional[UserGQLModel]:
         from .externals import UserGQLModel
 
         return UserGQLModel(id=self.user_id)
 
-    @strawberry.field(description="""Group for which the user has some right""")
+    @strawberry.field(description="""Group for which the user has some right""", permission_classes=[OnlyForAuthentized()])
     def group(self) -> Optional[GroupGQLModel]:
         from .externals import GroupGQLModel
 
         return GroupGQLModel(id=self.group_id)
 
-    @strawberry.field(description="""State""")
+    @strawberry.field(description="""State""", permission_classes=[OnlyForAuthentized()])
     async def state(
         self, info: strawberry.types.Info
     ) -> Optional[WorkflowStateGQLModel]:
@@ -145,7 +146,7 @@ class WorkflowStateRemoveUserGQLModel:
 
 
 @strawberry.mutation(
-    description="""Adds or updates a user & group at the workflow state"""
+    description="""Adds or updates a user & group at the workflow state""", permission_classes=[OnlyForAuthentized()]
 )
 async def workflow_state_add_user(
     self, info: strawberry.types.Info, payload: WorkflowStateAddUserGQLModel
@@ -177,7 +178,7 @@ async def workflow_state_add_user(
     return result
 
 
-@strawberry.mutation(description="""Remove the user & group from the workflow state""")
+@strawberry.mutation(description="""Remove the user & group from the workflow state""", permission_classes=[OnlyForAuthentized()])
 async def workflow_state_remove_user(
     self, info: strawberry.types.Info, payload: WorkflowStateRemoveUserGQLModel
 ) -> Optional["WorkflowStateResultGQLModel"]:

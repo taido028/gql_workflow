@@ -7,6 +7,7 @@ import uuid
 
 from .BaseGQLModel import BaseGQLModel
 from utils.Dataloaders import getLoadersFromInfo, getUserFromInfo
+from._GraphPermissions import OnlyForAuthentized
 
 from GraphTypeDefinitions._GraphResolvers import (
     resolve_id,
@@ -48,7 +49,7 @@ class WorkflowTransitionGQLModel(BaseGQLModel):
     valid = resolve_valid
     lastchange = resolve_lastchange
 
-    @strawberry.field(description="""Source""")
+    @strawberry.field(description="""Source""", permission_classes=[OnlyForAuthentized()])
     async def source(
         self, info: strawberry.types.Info
     ) -> Optional[WorkflowStateGQLModel]:
@@ -56,7 +57,7 @@ class WorkflowTransitionGQLModel(BaseGQLModel):
         result = await loader.load(self.sourcestate_id)
         return result
 
-    @strawberry.field(description="""Destination""")
+    @strawberry.field(description="""Destination""", permission_classes=[OnlyForAuthentized()])
     async def destination(
         self, info: strawberry.types.Info
     ) -> Optional["WorkflowStateGQLModel"]:
@@ -64,7 +65,7 @@ class WorkflowTransitionGQLModel(BaseGQLModel):
         result = await loader.load(self.destinationstate_id)
         return result
 
-    @strawberry.field(description="""The owning workflow""")
+    @strawberry.field(description="""The owning workflow""", permission_classes=[OnlyForAuthentized()])
     async def workflow(
         self, info: strawberry.types.Info
     ) -> Optional["WorkflowGQLModel"]:
@@ -165,7 +166,7 @@ class WorkflowTransitionResultGQLModel:
         return result
 
 
-@strawberry.mutation(description="""""")
+@strawberry.mutation(description="""Create a new workflow transition""", permission_classes=[OnlyForAuthentized()])
 async def workflow_transition_insert(
     self, info: strawberry.types.Info, state: WorkflowTransitionInsertGQLModel
 ) -> WorkflowTransitionResultGQLModel:
@@ -177,7 +178,7 @@ async def workflow_transition_insert(
     return result
 
 
-@strawberry.mutation(description="""""")
+@strawberry.mutation(description="""Update a workflow transition""", permission_classes=[OnlyForAuthentized()])
 async def workflow_transition_update(
     self, info: strawberry.types.Info, state: WorkflowTransitionUpdateGQLModel
 ) -> WorkflowTransitionResultGQLModel:

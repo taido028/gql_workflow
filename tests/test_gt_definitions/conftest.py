@@ -98,19 +98,20 @@ async def FillDataViaGQL(DemoData, GQLInsertQueries, ClientExecutorAdmin):
         assert table is not None, f"{tablename} is missing in DemoData"
 
         for row in table:
-            variable_values = {}
-            for key, value in row.items():
-                variable_values[key] = value
-                if isinstance(value, datetime.datetime):
-                    variable_values[key] = value.isoformat()
-                elif type(value) in types:
-                    variable_values[key] = f"{value}"
-
+            variable_values = {key: value.isoformat() if isinstance(value, datetime.datetime) else str(value) for key, value in row.items()}
             readResponse = await ClientExecutorAdmin(query=queryset["read"], variable_values=variable_values)
-            if readResponse["data"]["result"] is not None:
-                logging.info(f"row with id `{variable_values['id']}` already exists in `{tablename}`")
+            
+            # Check if readResponse or readResponse["data"] is None
+            if readResponse is None or readResponse.get("data") is None:
+                logging.error(f"Invalid response for read query in table `{tablename}`: {readResponse}")
                 continue
+
+            if readResponse["data"].get("result") is not None:
+                logging.info(f"Row with id `{variable_values['id']}` already exists in `{tablename}`")
+                continue
+
             insertResponse = await ClientExecutorAdmin(query=queryset["create"], variable_values=variable_values)
             assert insertResponse.get("errors", None) is None, insertResponse
+
         logging.info(f"{tablename} initialized via gql query")
     logging.info(f"All WANTED tables are initialized")
