@@ -807,7 +807,9 @@
             "id": "16c92914-0f71-437d-ace3-9661abe4c6cd",
             "authorization_id": "a854adb9-b29a-4062-95b3-cfd685071f16",
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
-            "accesslevel": 2
+            "accesslevel": 2,
+            "changedby": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "createdby": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003"
         }
     ],
     "awauthorizationgroups": [
