@@ -165,6 +165,13 @@ import logging
 import os
 from pydantic import BaseModel
 
+
+## AUTO LOAD ENV FILE WITHOUT ADDING COMMANDS
+from dotenv import load_dotenv
+load_dotenv("environment.txt")
+
+
+
 import logging
 import logging.handlers
 import socket
