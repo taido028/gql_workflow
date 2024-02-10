@@ -50,6 +50,9 @@ test_insert_workflowtransition = createFrontendQuery(
             msg
             transition{
                 id
+                source { id }
+                destination { id }
+                workflow { id }
             }
         }
     }""",

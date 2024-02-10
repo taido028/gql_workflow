@@ -48,6 +48,12 @@ test_insert_workflowstate = createFrontendQuery(
             state{
                 id
                 name
+                lastchange
+                users { id }
+                roletypes { id }
+                nextTransitions { id }
+                previousTransitions { id }
+                workflow { id }
             }
         }
     }""",

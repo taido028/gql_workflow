@@ -51,12 +51,16 @@ test_add_workflowstateuser = createFrontendQuery(
                 id
                 name
                 lastchange
+                users { 
+                    id 
+                    group { id }
+                    user { id }
+                    state { id }
+                }
                 roletypes{
                     id
                     accesslevel
-                    roleType{
-                        id
-                    }
+                    roleType { id }
                 }
             }
         }

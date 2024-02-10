@@ -216,7 +216,6 @@ async def workflow_state_update(
     loader = getLoadersFromInfo(info).workflowstates
     row = await loader.update(state)
     result = WorkflowStateResultGQLModel(id=row.id, msg="ok")
-    if row is None:
-        result.msg = "fail"
+    if row is None: result.msg = "fail"
 
     return result

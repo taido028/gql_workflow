@@ -46,16 +46,15 @@ test_add_workflowstateroletype = createFrontendQuery(
         result: workflowStateAddRole(payload:{workflowstateId: $wid, roletypeId: $rid, accesslevel: $al}){
             id
             msg
-            state{
+            state {
                 id
                 name
                 lastchange
-                roletypes{
+                roletypes {
                     id
                     accesslevel
-                    roleType{
-                        id
-                    }
+                    roleType { id }
+                    state { id }
                 }
             }
         }

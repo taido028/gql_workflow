@@ -45,6 +45,13 @@ test_insert_workflow = createFrontendQuery(
         result: workflowInsert(workflow: {id: $id, name: $name}) {
             id
             msg
+            workflow{
+                id
+                name
+                lastchange
+                states { id }
+                transitions { id }
+            }
         }
     }""",
     variables={"id": "8299eeeb-99e7-4364-8cc2-88b83f900d34" ,"name": "another workflowss"},
