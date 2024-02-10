@@ -19,7 +19,8 @@ from .gt_utils import (
     createPageTest, 
     createResolveReferenceTest, 
     createFrontendQuery, 
-    createUpdateQuery
+    createUpdateQuery,
+    createDeleteQuery
 )
 
 
@@ -86,5 +87,10 @@ test_remove_workflowstateuser = createFrontendQuery(
     }""",
     variables={"workflowstate_id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0", "groupId": "f8a46c25-73e2-4d43-bb54-471570be3657", "user_id": "f8a46c25-73e2-4d43-bb54-471570be3657"}
 )
+
+
+# test_remove_workflowstateuser = createDeleteQuery(tableName="awworkflowstateusers",
+#                                                   queryBase="state",
+#                                                   id="b1f578cc-7738-4c5c-acd4-045430b808e3")
 
 

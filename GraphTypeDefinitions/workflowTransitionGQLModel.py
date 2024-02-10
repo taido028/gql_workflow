@@ -14,6 +14,10 @@ from GraphTypeDefinitions._GraphResolvers import (
     resolve_lastchange,
     resolve_name,
     resolve_valid,
+    resolve_rbacobject,
+    resolve_changedby,
+    resolve_created,
+    resolve_createdby,
     createRootResolver_by_id,
     createRootResolver_by_page,
 )
@@ -48,6 +52,10 @@ class WorkflowTransitionGQLModel(BaseGQLModel):
     name = resolve_name
     valid = resolve_valid
     lastchange = resolve_lastchange
+    rbacobject = resolve_rbacobject
+    created = resolve_created
+    createdby = resolve_createdby
+    changedby = resolve_changedby
 
     @strawberry.field(description="""Source""", permission_classes=[OnlyForAuthentized()])
     async def source(
@@ -92,6 +100,10 @@ class WorkflowStateTransitionWhereFilter:
     sourcestate_id: typing.Optional[uuid.UUID]
     destinationstate_id: typing.Optional[uuid.UUID]
 
+    from .workflowGQLModel import WorkflowWhereFilter
+
+    worklows: WorkflowWhereFilter
+
 
 workflow_transition = createRootResolver_by_page(
     scalarType=WorkflowTransitionGQLModel,
@@ -127,9 +139,10 @@ class WorkflowTransitionInsertGQLModel:
         default=None, description="Identification of destination"
     )
     valid: Optional[bool] = True
+    createdby: strawberry.Private[UUID] = None
 
 
-@strawberry.input(description="""""")
+@strawberry.input(description="""Input structure - UD operation""")
 class WorkflowTransitionUpdateGQLModel:
     lastchange: datetime.datetime = strawberry.field(
         description="time of last change = TOKEN"
@@ -146,9 +159,10 @@ class WorkflowTransitionUpdateGQLModel:
     valid: Optional[bool] = None
     name: Optional[str] = None
     name_en: Optional[str] = None
+    changedby: strawberry.Private[UUID] = None
 
 
-@strawberry.type(description="""""")
+@strawberry.type(description="""Result of CUD operations""")
 class WorkflowTransitionResultGQLModel:
     id: Optional[uuid.UUID] = strawberry.field(
         description="primary key of CU operation object"
@@ -170,6 +184,9 @@ class WorkflowTransitionResultGQLModel:
 async def workflow_transition_insert(
     self, info: strawberry.types.Info, state: WorkflowTransitionInsertGQLModel
 ) -> WorkflowTransitionResultGQLModel:
+    user = getUserFromInfo(info)
+    state.createdby = UUID(user["id"])
+
     loader = getLoadersFromInfo(info).workflowtransitions
     row = await loader.insert(state)
     result = WorkflowTransitionResultGQLModel(msg = "ok", id = row.id)
@@ -182,6 +199,8 @@ async def workflow_transition_insert(
 async def workflow_transition_update(
     self, info: strawberry.types.Info, state: WorkflowTransitionUpdateGQLModel
 ) -> WorkflowTransitionResultGQLModel:
+    user = getUserFromInfo(info)
+    state.changedby = UUID(user["id"])
     loader = getLoadersFromInfo(info).workflowtransitions
     row = await loader.update(state)
     result = WorkflowTransitionResultGQLModel(msg = "ok", id = state.id)

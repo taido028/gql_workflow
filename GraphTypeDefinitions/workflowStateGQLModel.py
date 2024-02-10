@@ -15,8 +15,10 @@ from GraphTypeDefinitions._GraphResolvers import (
     resolve_name,
     resolve_valid,
     resolve_lastchange,
+    resolve_created,
     resolve_createdby,
     resolve_changedby,
+    resolve_rbacobject,
     createRootResolver_by_id,
     createRootResolver_by_page,
 )
@@ -57,8 +59,11 @@ class WorkflowStateGQLModel(BaseGQLModel):
     name = resolve_name
     valid = resolve_valid
     lastchange = resolve_lastchange
+    created = resolve_created
     createdby = resolve_createdby
     changedby = resolve_changedby
+    rbacobject = resolve_rbacobject
+
 
     @strawberry.field(description="""outcomming transitions""", permission_classes=[OnlyForAuthentized(isList=True)])
     async def next_transitions(
@@ -115,8 +120,16 @@ from uoishelpers.resolvers import createInputs
 @createInputs
 @dataclass
 class WorkflowStateWhereFilter:
-    workflow_id: typing.Optional[uuid.UUID]
+    workflow_id: UUID
     name: str
+    valid: bool
+    created: datetime.datetime
+    createdby: UUID
+    changedby: UUID
+
+    from .workflowGQLModel import WorkflowWhereFilter
+
+    worklows: WorkflowWhereFilter
 
 
 workflow_state_by_id = createRootResolver_by_id(
@@ -146,6 +159,7 @@ class WorkflowStateInsertGQLModel:
     name: Optional[str] = None
     name_en: Optional[str] = None
     valid: Optional[bool] = True
+    createdby: strawberry.Private[UUID] = None
 
 
 @strawberry.input
@@ -159,6 +173,7 @@ class WorkflowStateUpdateGQLModel:
     valid: Optional[bool] = None
     name: Optional[str] = None
     name_en: Optional[str] = None
+    changedby: strawberry.Private[UUID] = None
 
 
 @strawberry.type
@@ -175,12 +190,16 @@ class WorkflowStateResultGQLModel:
     async def state(self, info: strawberry.types.Info) -> WorkflowStateGQLModel:
         result = await WorkflowStateGQLModel.resolve_reference(info, self.id)
         return result
+    
+    valid: Optional[bool] = None
 
 
 @strawberry.mutation(description="Create a new state of workflow", permission_classes=[OnlyForAuthentized()])
 async def workflow_state_insert(
     self, info: strawberry.types.Info, state: WorkflowStateInsertGQLModel
 ) -> WorkflowStateResultGQLModel:
+    user= getUserFromInfo(info)
+    state.createdby = UUID(user["id"])
     loader = getLoadersFromInfo(info).workflowstates
     row = await loader.insert(state)
     result = WorkflowStateResultGQLModel(id=row.id, msg="ok")
@@ -192,6 +211,8 @@ async def workflow_state_insert(
 async def workflow_state_update(
     self, info: strawberry.types.Info, state: WorkflowStateUpdateGQLModel
 ) -> WorkflowStateResultGQLModel:
+    user= getUserFromInfo(info)
+    state.changedby = UUID(user["id"])
     loader = getLoadersFromInfo(info).workflowstates
     row = await loader.update(state)
     result = WorkflowStateResultGQLModel(id=row.id, msg="ok")

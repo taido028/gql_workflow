@@ -15,6 +15,7 @@ class WorkflowTransitionModel(BaseModel):
     name = Column(String)
     name_en = Column(String)
     valid = Column(Boolean, default=True, comment="if this entity is valid or invalid")
+    rbacobject = UUIDFKey(nullable=True, comment="user or group id, determines access")
 
     workflow_id = Column(ForeignKey("awworkflows.id"), index=True)
     sourcestate_id = Column(ForeignKey("awworkflowstates.id"), index=True)

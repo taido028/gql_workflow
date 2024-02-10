@@ -12,6 +12,11 @@ from GraphTypeDefinitions._GraphResolvers import (
     resolve_id,
     resolve_lastchange,
     resolve_name,
+    resolve_valid,
+    resolve_created,
+    resolve_createdby,
+    resolve_changedby,
+    resolve_rbacobject,
     createRootResolver_by_id,
     createRootResolver_by_page,
     
@@ -39,7 +44,13 @@ class WorkflowGQLModel(BaseGQLModel):
 
     id = resolve_id
     name = resolve_name
-    lastchange = resolve_lastchange
+    valid = resolve_valid
+    lastchange = resolve_lastchange    
+    created = resolve_created
+    createdby = resolve_createdby
+    changedby = resolve_changedby
+    rbacobject = resolve_rbacobject
+    
 
     @strawberry.field(description="""Proxy states attached to this workflow""", permission_classes=[OnlyForAuthentized(isList=True)] )
     async def states(
@@ -71,7 +82,12 @@ from uoishelpers.resolvers import createInputs
 @createInputs
 @dataclass
 class WorkflowWhereFilter:
+    id: UUID
     name: str
+    valid: bool
+    created: datetime.datetime
+    createdby: UUID
+    changedby: UUID
 
 
 workflow_by_id = createRootResolver_by_id(
@@ -100,6 +116,7 @@ class WorkflowInsertGQLModel:
         default=None, description="En name of type"
     )
     id: Optional[UUID] = strawberry.field(description="""primary key (UUID)""")
+    valid: Optional[bool] = True
     createdby: strawberry.Private[UUID] = None
 
 
@@ -111,6 +128,7 @@ class WorkflowUpdateGQLModel:
     id: uuid.UUID = strawberry.field(description="""primary key (UUID)""")
     name: Optional[str] = None
     name_en: Optional[str] = None
+    valid: Optional[bool] = None
     changedby: strawberry.Private[UUID] = None
 
 
@@ -135,6 +153,8 @@ class WorkflowResultGQLModel:
 async def workflow_insert(
     self, info: strawberry.types.Info, workflow: WorkflowInsertGQLModel
 ) -> WorkflowResultGQLModel:
+    user = getUserFromInfo(info)
+    workflow.createdby = UUID(user["id"])
     loader = getLoadersFromInfo(info).workflows
     row = await loader.insert(workflow)
     result = WorkflowResultGQLModel(id=row.id, msg="ok")
@@ -146,7 +166,8 @@ async def workflow_insert(
 async def workflow_update(
     self, info: strawberry.types.Info, workflow: WorkflowUpdateGQLModel
 ) -> WorkflowResultGQLModel:
-    actingUser = getUserFromInfo(info)
+    user = getUserFromInfo(info)
+    workflow.changedby = UUID(user["id"])
     loader = getLoadersFromInfo(info).workflows
 
     row = await loader.update(workflow)

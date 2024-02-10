@@ -167,8 +167,8 @@ from pydantic import BaseModel
 
 
 ## AUTO LOAD ENV FILE WITHOUT ADDING COMMANDS
-from dotenv import load_dotenv
-load_dotenv("environment.txt")
+# from dotenv import load_dotenv
+# load_dotenv("environment.txt")
 
 
 

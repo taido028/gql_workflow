@@ -127,7 +127,7 @@ def get_demodata():
 
                 json_dict[key] = dateValueWOtzinfo
 
-            if (key in ["id", "changeby", "createby"]) or (key.endswith("_id")):
+            if (key in ["id", "changeby", "createby", "rbacobject"]) or (key.endswith("_id")):
                 if key == "outer_id":
                     json_dict[key] = value
                 elif value not in ["", None]:

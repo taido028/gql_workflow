@@ -30,3 +30,5 @@ class WorkflowStateModel(BaseModel):
     createdby = UUIDFKey(
         nullable=True
     )  # Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    rbacobject = UUIDFKey(nullable=True, comment="user or group id, determines access")

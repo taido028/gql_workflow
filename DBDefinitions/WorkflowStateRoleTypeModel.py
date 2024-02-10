@@ -14,6 +14,8 @@ class WorkflowStateRoleTypeModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     accesslevel = Column(Integer)
+    valid = Column(Boolean, default=True, comment="if this entity is valid or invalid")
+    rbacobject = UUIDFKey(nullable=True, comment="user or group id, determines access")
 
     workflowstate_id = Column(ForeignKey("awworkflowstates.id"), index=True)
     # workflowstate = relationship("WorkflowStateModel", back_populates="roletypes")

@@ -240,7 +240,6 @@ def getAuthorizationToken(info):
     assert request is not None, "trying to get authtoken from None request"
 
 def getGroupFromInfo(info):
-    # Len pre testovacie účely
     result = demouser
     return result
     """

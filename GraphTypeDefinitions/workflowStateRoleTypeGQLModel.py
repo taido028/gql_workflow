@@ -19,6 +19,7 @@ from GraphTypeDefinitions._GraphResolvers import (
     resolve_accesslevel,
     resolve_createdby,
     resolve_changedby,
+    resolve_rbacobject,
     createRootResolver_by_id,
     createRootResolver_by_page,
 )
@@ -60,6 +61,9 @@ class WorkflowStateRoleTypeGQLModel(BaseGQLModel):
     id = resolve_id
     lastchange = resolve_lastchange
     accesslevel = resolve_accesslevel
+    rbacobject = resolve_rbacobject
+    valid = resolve_valid
+
 
     @strawberry.field(description="""State""", permission_classes=[OnlyForAuthentized()])
     async def state(
@@ -93,6 +97,14 @@ class WorkflowStateRoleTypeWhereFilter:
     workflowstate_id: typing.Optional[uuid.UUID]
     roletype_id: typing.Optional[uuid.UUID]
     accesslevel: int
+    valid : bool
+    created: datetime.datetime
+    createdby: UUID
+    changedby: UUID
+
+    from .workflowStateGQLModel import WorkflowStateWhereFilter
+    
+    states: WorkflowStateWhereFilter
 
 
 workflow_state_role_type = createRootResolver_by_page(
@@ -125,6 +137,8 @@ class WorkflowStateAddRoleGQLModel:
         default=None, description="Identification of role type"
     )
     accesslevel: int = strawberry.field(description="access level")
+    valid: Optional[bool] = True
+    createdby: strawberry.Private[UUID] = None
 
 
 @strawberry.input(description=""" D operation""")

@@ -18,6 +18,7 @@ from GraphTypeDefinitions._GraphResolvers import (
     resolve_lastchange,
     resolve_createdby,
     resolve_changedby,
+    resolve_rbacobject,
     createRootResolver_by_id,
     createRootResolver_by_page,
 )
@@ -59,7 +60,9 @@ class WorkflowStateUserGQLModel(BaseGQLModel):
         return getLoadersFromInfo(info).workflowstateusers
 
     id = resolve_id
+    valid = resolve_valid
     lastchange = resolve_lastchange
+    rbacobject = resolve_rbacobject
 
     @strawberry.field(description="""User""", permission_classes=[OnlyForAuthentized()])
     def user(self) -> Optional[UserGQLModel]:
@@ -98,6 +101,10 @@ class WorkflowStateUserWhereFilter:
     workflowstate_id: typing.Optional[uuid.UUID]
     user_id: typing.Optional[uuid.UUID]
     group_id: typing.Optional[uuid.UUID]
+
+    from .workflowStateGQLModel import WorkflowStateWhereFilter
+    
+    states: WorkflowStateWhereFilter
 
 
 workflow_state_user = createRootResolver_by_page(
