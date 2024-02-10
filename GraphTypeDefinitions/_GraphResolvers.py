@@ -18,8 +18,7 @@ def resolve_id(self) -> uuid.UUID:
 
 
 @strawberry.field(description="""workflow id """, permission_classes=[OnlyForAuthentized()])
-def resolve_workflow_id(self) -> uuid.UUID:
-    return self.workflow_id
+def resolve_workflow_id(self) -> uuid.UUID: return self.workflow_id
 
 
 async def resolve_group(group_id):
@@ -29,8 +28,7 @@ async def resolve_group(group_id):
 
 
 @strawberry.field(description="""Group ID""", permission_classes=[OnlyForAuthentized()])
-async def resolve_group_id(self) -> typing.Optional["GroupGQLModel"]:
-    return await resolve_group(self.group_id)
+async def resolve_group_id(self) -> typing.Optional["GroupGQLModel"]: return await resolve_group(self.group_id)
 
 
 async def resolve_user(user_id):
@@ -40,8 +38,7 @@ async def resolve_user(user_id):
 
 
 @strawberry.field(description="""User ID """, permission_classes=[OnlyForAuthentized()])
-async def resolve_user_id(self) -> typing.Optional["UserGQLModel"]:
-    return await resolve_user(self.user_id)
+async def resolve_user_id(self) -> typing.Optional["UserGQLModel"]: return await resolve_user(self.user_id)
 
 
 async def resolve_roletype(roletype_id):
@@ -50,8 +47,7 @@ async def resolve_roletype(roletype_id):
     return result
 
 @strawberry.field(description="""Role Type ID """, permission_classes=[OnlyForAuthentized()])
-async def resolve_roletype_id(self) -> typing.Optional["RoleTypeGQLModel"]:
-    return await resolve_roletype(self.roletype_id)
+async def resolve_roletype_id(self) -> typing.Optional["RoleTypeGQLModel"]: return await resolve_roletype(self.roletype_id)
 
 
 @strawberry.field(description="""Level of authorization""", permission_classes=[OnlyForAuthentized()])
@@ -68,23 +64,19 @@ def resolve_name(self) -> str:
     return self.name
 
 @strawberry.field(description="""if the state is enabled""", permission_classes=[OnlyForAuthentized()])
-def resolve_valid(self) -> Optional[bool]:
-    return self.valid if self.valid is not None else False
+def resolve_valid(self) -> Optional[bool]: return self.valid if self.valid is not None else False
 
 
 @strawberry.field(description="""Time of entity introduction""", permission_classes=[OnlyForAuthentized()])
-def resolve_created(self) -> typing.Optional[datetime.datetime]:
-    return self.created
+def resolve_created(self) -> typing.Optional[datetime.datetime]: return self.created
 
 
 @strawberry.field(description="""Who created entity""", permission_classes=[OnlyForAuthentized()])
-async def resolve_createdby(self) -> typing.Optional["UserGQLModel"]:
-    return await resolve_user(self.createdby)
+async def resolve_createdby(self) -> typing.Optional["UserGQLModel"]: return await resolve_user(self.createdby)
 
 
 @strawberry.field(description="""Who made last change""", permission_classes=[OnlyForAuthentized()])
-async def resolve_changedby(self) -> typing.Optional["UserGQLModel"]:
-    return await resolve_user(self.changedby)
+async def resolve_changedby(self) -> typing.Optional["UserGQLModel"]: return await resolve_user(self.changedby)
 
 RBACObjectGQLModel = typing.Annotated["RBACObjectGQLModel", strawberry.lazy(".externals")]
 @strawberry.field(description="""Who made last change""",

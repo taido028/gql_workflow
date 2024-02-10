@@ -61,8 +61,7 @@ class AuthorizationLoader(DataLoader):
         self.demo = demo
         self.authorizationToken = ""
 
-    def setTokenByInfo(self, info):
-        self.authorizationToken = ""
+    def setTokenByInfo(self, info): self.authorizationToken = ""
 
     async def _load(self, id):
         variables = {"id": f"{id}"}
@@ -136,8 +135,7 @@ def createLoaders(asyncSessionMaker, models=dbmodels) -> Loaders:
         
         @property
         @cache
-        def authorizations(self):
-            return AuthorizationLoader()
+        def authorizations(self): return AuthorizationLoader()
         
         @property
         @cache

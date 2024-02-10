@@ -51,9 +51,7 @@ def get_ug_connection(request: Request):
 
     authorizationToken = None
     authorizationBrearer = request.headers.get("authorization", None)
-    if authorizationBrearer is None:
-        authorizationToken = request.cookies.get("authorization", None)
-    else:
-        [_, authorizationToken, *__] = authorizationBrearer.split(" ")
+    if authorizationBrearer is None: authorizationToken = request.cookies.get("authorization", None)
+    else: [_, authorizationToken, *__] = authorizationBrearer.split(" ")
 
     return gqlproxy.connection(authorizationToken=authorizationToken)

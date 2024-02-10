@@ -168,16 +168,8 @@ async def workflow_state_add_role(
     
     row = next(existing, None)
     
-    if row is None:
-        row = await loader.insert(payload)
-        result.id = payload.workflowstate_id
-        
-    else:
-        row = await loader.update(row, {"accesslevel": payload.accesslevel})
-        if row is None:
-            result.id = None
-            result.msg = "fail"
-        result.id = payload.workflowstate_id
+    row = await loader.insert(payload) if row is None else await loader.update(row, {"accesslevel": payload.accesslevel}) or result.update(id=None, msg="fail")
+    result.id = payload.workflowstate_id if row else None
     return result
 
 
@@ -198,9 +190,5 @@ async def workflow_state_remove_role(
     result = WorkflowStateResultGQLModel(id = payload.workflowstate_id, msg = "ok")
     # result.id = payload.workflowstate_id
     
-    if existing is None:
-        result.msg = "fail"
-    else:
-        await loader.delete(existing.id)
-        result.msg = "ok"
+    result.msg = "fail" if existing is None else (await loader.delete(existing.id), "ok")[1]
     return result

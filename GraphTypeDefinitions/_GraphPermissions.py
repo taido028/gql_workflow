@@ -40,8 +40,7 @@ class BasePermission(strawberry.permission.BasePermission):
 
     async def has_permission(
         self, source, info: strawberry.types.Info, **kwargs
-    ) -> bool:
-        raise NotImplemented()
+    ) -> bool: raise NotImplemented()
         # print("BasePermission", source)
         # print("BasePermission", self)
         # print("BasePermission", kwargs)
@@ -164,9 +163,7 @@ def ReadAllRoles():
     roles = list(map(lambda item: {**item, "nameEn": item["name_ne"]}, roles))
     return [*roles]
 
-if not isDEMO:
-    rolelist = ReadAllRoles()
-
+if not isDEMO: rolelist = ReadAllRoles()
 roleIndex = { role["name_en"]: role["id"] for role in rolelist }
 
 
@@ -201,9 +198,7 @@ def OnlyForAuthentized(isList=False):
             return (False if user is None else True)
             #     return False        
             # return True
-        
-        def on_unauthorized(self):
-            return ([] if isList else None)
+        def on_unauthorized(self): return ([] if isList else None)
             #     return []
             # else:
             #     return None
@@ -211,10 +206,7 @@ def OnlyForAuthentized(isList=False):
         @cached_property
         def isDEMO(self):
             DEMO = os.getenv("DEMO", None)
-            if DEMO == "True":
-                return True
-            else:
-                return False
+            return DEMO == "True"
             
     return OnlyForAuthentized
 

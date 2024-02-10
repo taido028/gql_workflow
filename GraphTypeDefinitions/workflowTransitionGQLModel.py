@@ -206,7 +206,6 @@ async def workflow_transition_update(
     result = WorkflowTransitionResultGQLModel(msg = "ok", id = state.id)
     # result.msg = "ok"
     # result.id = state.id
-    if row is None:
-        result.msg = "fail"
+    if row is None: result.msg = "fail"
 
     return result

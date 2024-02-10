@@ -3,8 +3,7 @@ import uuid
 
 
 @classmethod
-async def resolve_reference(cls, info: strawberry.types.Info, id: uuid.UUID):
-    return cls(id=id)
+async def resolve_reference(cls, info: strawberry.types.Info, id: uuid.UUID): return cls(id=id)
 
 
 class BaseEternal:

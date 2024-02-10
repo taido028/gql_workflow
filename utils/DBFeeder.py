@@ -128,8 +128,7 @@ def get_demodata():
                 json_dict[key] = dateValueWOtzinfo
 
             if (key in ["id", "changeby", "createby", "rbacobject"]) or (key.endswith("_id")):
-                if key == "outer_id":
-                    json_dict[key] = value
+                if key == "outer_id": json_dict[key] = value
                 elif value not in ["", None]:
                     json_dict[key] = uuid.UUID(value)
                 else:
@@ -144,8 +143,7 @@ def get_demodata():
 
 async def initDB(asyncSessionMaker):
     demoMode = os.environ.get("DEMODATA", None)
-    if demoMode:
-        dbModels = [
+    if demoMode: dbModels = [
             WorkflowModel,
             WorkflowStateModel,
             WorkflowStateRoleTypeModel,
