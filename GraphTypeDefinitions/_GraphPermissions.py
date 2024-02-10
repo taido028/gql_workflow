@@ -147,21 +147,16 @@ import requests
 from utils.gql_ug_proxy import createProxy
 
 def ReadAllRoles():
-    GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL", None)
+    GQLUG_ENDPOINT_URL = os.environ.get("GQLUG_ENDPOINT_URL")
     gqlproxy = createProxy(GQLUG_ENDPOINT_URL)
 
     query = """query {roleTypePage(limit: 1000) {id, name, nameEn}}"""
-    variables = {}
+    respJson = gqlproxy.post(query=query, variables={})
+    
+    roles = respJson.get("data", {}).get("roleTypePage", [])
+    roles = [{**item, "nameEn": item["name_ne"]} for item in roles]
 
-    respJson = gqlproxy.post(query=query, variables=variables)
-    assert respJson.get("errors", None) is None, respJson["errors"]
-    respdata = respJson.get("data", None)
-    assert respdata is not None, "during roles reading roles have not been readed"
-    roles = respdata.get("roles", None)
-    assert roles is not None, "during roles reading roles have not been readed"
-    print("roles", roles)
-    roles = list(map(lambda item: {**item, "nameEn": item["name_ne"]}, roles))
-    return [*roles]
+    return roles
 
 if not isDEMO: rolelist = ReadAllRoles()
 roleIndex = { role["name_en"]: role["id"] for role in rolelist }
@@ -170,11 +165,7 @@ roleIndex = { role["name_en"]: role["id"] for role in rolelist }
 ###
 
 @cache
-def RolesToList(roles: str = ""):
-    roleNames = roles.split(";")
-    roleNames = list(map(lambda item: item.strip(), roleNames))
-    roleIdsNeeded = list(map(lambda roleName: roleIndex[roleName], roleNames))
-    return roleIdsNeeded
+def RolesToList(roles: str = ""): return list(map(lambda item: roleIndex[item.strip()], roles.split(";")))
 
 from utils.Dataloaders import getUgConnection, getLoadersFromInfo
 from utils.Dataloaders import getUserFromInfo
@@ -194,8 +185,7 @@ def OnlyForAuthentized(isList=False):
                 print("DEMO Enabled, not for production")
                 return True
             
-            user = getUserFromInfo(info)
-            return (False if user is None else True)
+            return getUserFromInfo(info) is not None
             #     return False        
             # return True
         def on_unauthorized(self): return ([] if isList else None)

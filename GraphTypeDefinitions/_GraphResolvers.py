@@ -21,30 +21,21 @@ def resolve_id(self) -> uuid.UUID:
 def resolve_workflow_id(self) -> uuid.UUID: return self.workflow_id
 
 
-async def resolve_group(group_id):
-    from .externals import GroupGQLModel
-    result = None if group_id is None else await GroupGQLModel.resolve_reference(group_id)
-    return result
+async def resolve_group(group_id): return None if group_id is None else await GroupGQLModel.resolve_reference(group_id)
 
 
 @strawberry.field(description="""Group ID""", permission_classes=[OnlyForAuthentized()])
 async def resolve_group_id(self) -> typing.Optional["GroupGQLModel"]: return await resolve_group(self.group_id)
 
 
-async def resolve_user(user_id):
-    from .externals import UserGQLModel
-    result = None if user_id is None else await UserGQLModel.resolve_reference(user_id)
-    return result
+async def resolve_user(user_id): return None if user_id is None else await UserGQLModel.resolve_reference(user_id)
 
 
 @strawberry.field(description="""User ID """, permission_classes=[OnlyForAuthentized()])
 async def resolve_user_id(self) -> typing.Optional["UserGQLModel"]: return await resolve_user(self.user_id)
 
 
-async def resolve_roletype(roletype_id):
-    from .externals import RoleTypeGQLModel
-    result = None if roletype_id is None else await RoleTypeGQLModel.resolve_reference(roletype_id)
-    return result
+async def resolve_roletype(roletype_id): return None if roletype_id is None else await RoleTypeGQLModel.resolve_reference(roletype_id)
 
 @strawberry.field(description="""Role Type ID """, permission_classes=[OnlyForAuthentized()])
 async def resolve_roletype_id(self) -> typing.Optional["RoleTypeGQLModel"]: return await resolve_roletype(self.roletype_id)
@@ -81,11 +72,7 @@ async def resolve_changedby(self) -> typing.Optional["UserGQLModel"]: return awa
 RBACObjectGQLModel = typing.Annotated["RBACObjectGQLModel", strawberry.lazy(".externals")]
 @strawberry.field(description="""Who made last change""",
         permission_classes=[OnlyForAuthentized()])
-async def resolve_rbacobject(self, info: strawberry.types.Info) -> typing.Optional[RBACObjectGQLModel]:
-    from .externals import RBACObjectGQLModel
-    result = None if self.rbacobject is None else await RBACObjectGQLModel.resolve_reference(info, self.rbacobject)
-    return result
-
+async def resolve_rbacobject(self, info: strawberry.types.Info) -> typing.Optional[RBACObjectGQLModel]: return None if self.rbacobject is None else await RBACObjectGQLModel.resolve_reference(info, self.rbacobject)
 
 resolve_result_id: uuid.UUID = strawberry.field(description="primary key of CU operation object")
 resolve_result_msg: str = strawberry.field(description="""Should be `ok` if descired state has been reached, otherwise `fail`.

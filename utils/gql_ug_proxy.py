@@ -25,21 +25,14 @@ def createProxy(url):
         
     class Proxy:
         @asynccontextmanager
-        async def Session(self, authorizationToken):
-            result = self.connection(authorizationToken=authorizationToken)
-            yield result
-            pass
+        async def Session(self, authorizationToken): yield self.connection(authorizationToken=authorizationToken)
             
         @cache
         def connection(self, authorizationToken):
             result = _Session(authorizationToken=authorizationToken)
             return result
         
-        def post(self, query, variables={}):
-            json = {"query": query, "variables": variables}
-            response = requests.post(url=url, json=json)
-            result = response.json()
-            return result
+        def post(self, query, variables={}): return requests.post(url=url, json={"query": query, "variables": variables}).json()
 
     return Proxy()
 
