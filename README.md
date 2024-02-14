@@ -59,7 +59,7 @@ uvicorn main:app --env-file environment.txt --port 8000 --reload
 ## Pytest coverage report
 ```text
 ---------- coverage: platform win32, python 3.10.10-final-0 ----------
-Name                                                    Stmts   Miss  Cover   Missing
+Name                                                    Stmts   Miss  Cover   Missing       
 -------------------------------------------------------------------------------------       
 DBDefinitions\AuthorizationGroupModel.py                   15      0   100%
 DBDefinitions\AuthorizationModel.py                         8      0   100%
@@ -75,14 +75,13 @@ DBDefinitions\__init__.py                                  36      1    97%   36
 DBDefinitions\uuid.py                                       9      0   100%
 GraphTypeDefinitions\BaseGQLModel.py                       14      0   100%
 GraphTypeDefinitions\_GraphPermissions.py                  88     48    45%   150-164, 174-177, 197-198, 219-287
-GraphTypeDefinitions\_GraphResolvers.py                    95     21    78%   25-27, 35-46, 
-55-57, 95-97, 321-323
+GraphTypeDefinitions\_GraphResolvers.py                    77      3    96%   298-300       
 GraphTypeDefinitions\__init__.py                           55      0   100%
 GraphTypeDefinitions\authorizationGQLModel.py               0      0   100%
 GraphTypeDefinitions\authorizationGroupGQLModel.py          0      0   100%
 GraphTypeDefinitions\authorizationRoleTypeGQLModel.py       0      0   100%
 GraphTypeDefinitions\authorizationUserGQLModel.py           0      0   100%
-GraphTypeDefinitions\externals.py                          28      3    89%   38-40
+GraphTypeDefinitions\externals.py                          25      0   100%
 GraphTypeDefinitions\utils.py                               0      0   100%
 GraphTypeDefinitions\workflowGQLModel.py                   85      0   100%
 GraphTypeDefinitions\workflowStateGQLModel.py             111      0   100%
@@ -92,9 +91,9 @@ GraphTypeDefinitions\workflowTransitionGQLModel.py        114      2    98%   24
 utils\DBFeeder.py                                          37      0   100%
 utils\Dataloaders.py                                      129     12    91%   69, 83-102    
 utils\__init__.py                                           0      0   100%
-utils\gql_ug_proxy.py                                      36      7    81%   29-31, 39-42  
+utils\gql_ug_proxy.py                                      29      0   100%
 utils\sentinel.py                                           8      0   100%
 -------------------------------------------------------------------------------------       
-TOTAL                                                    1151     94    92%
+TOTAL                                                    1123     66    94%
 
 ```

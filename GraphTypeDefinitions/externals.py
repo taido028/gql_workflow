@@ -34,7 +34,4 @@ class RBACObjectGQLModel:
     resolve_reference = resolve_reference
 
     @classmethod
-    async def resolve_roles(cls, info: strawberry.types.Info, id: uuid.UUID):
-        loader = getLoadersFromInfo(info).authorizations
-        authorizedroles = await loader.load(id)
-        return authorizedroles
+    async def resolve_roles(cls, info: strawberry.types.Info, id: uuid.UUID): return await getLoadersFromInfo(info).authorizations.load(id)
