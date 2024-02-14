@@ -142,7 +142,7 @@ class WorkflowTransitionInsertGQLModel:
     createdby: strawberry.Private[UUID] = None
 
 
-@strawberry.input(description="""Input structure - UD operation""")
+@strawberry.input(description="""Input structure - U operation""")
 class WorkflowTransitionUpdateGQLModel:
     lastchange: datetime.datetime = strawberry.field(
         description="time of last change = TOKEN"
@@ -161,6 +161,18 @@ class WorkflowTransitionUpdateGQLModel:
     name_en: Optional[str] = None
     changedby: strawberry.Private[UUID] = None
 
+@strawberry.input(description="""D operation""")
+class WorkflowTransitionDeleteGQLModel:
+    workflow_id: UUID = strawberry.field(
+        default=None, description="Identification of workflow "
+    )
+    sourcestate_id: uuid.UUID = strawberry.field(
+        default=None, description="Identification of source state"
+    )
+    destinationstate_id: uuid.UUID = strawberry.field(
+        default=None, description="Identification of destination"
+    )
+
 
 @strawberry.type(description="""Result of CUD operations""")
 class WorkflowTransitionResultGQLModel:
@@ -175,7 +187,7 @@ class WorkflowTransitionResultGQLModel:
     @strawberry.field(description="""Result of workflow transition operation""")
     async def transition(
         self, info: strawberry.types.Info
-    ) -> WorkflowTransitionGQLModel:
+    ) -> Optional[WorkflowTransitionGQLModel]:
         result = await WorkflowTransitionGQLModel.resolve_reference(info, self.id)
         return result
 
@@ -209,3 +221,27 @@ async def workflow_transition_update(
     if row is None: result.msg = "fail"
 
     return result
+
+
+@strawberry.mutation(
+    description="Delete a workflow transition",
+    permission_classes=[OnlyForAuthentized()])
+async def workflow_transition_delete(self, info: strawberry.types.Info, payload: WorkflowTransitionDeleteGQLModel) -> Optional["WorkflowTransitionResultGQLModel"]:
+    
+    loader = getLoadersFromInfo(info).workflowtransitions
+    rows = await loader.filter_by(
+        workflow_id=payload.workflow_id,
+        sourcestate_id=payload.sourcestate_id,
+        destinationstate_id=payload.destinationstate_id,
+    )
+
+    row = next(rows, None)
+    if row is not None:
+        await loader.delete(row.id)
+        result = WorkflowTransitionResultGQLModel(msg="ok", id=row.id)
+    else:
+        # Assign a default value to result if row is None
+        result = WorkflowTransitionResultGQLModel(msg="not found", id=None)
+
+    return result
+

@@ -1,38 +1,100 @@
-# ISDatabase
-Database backend for university site. Project is based on SQLAlchemy and GraphQL (strawberry federated).
-<br/><br/>
-This project contains only SQLAlchemy models and GraphQL endpoint to provide data from the postgres database running in separate container. To successfully start this application you need to have a running postgres database (for instance in docker container).
-<br/><br/>
+# GQL_WorkFlow
+## Zadání
+Entity (WorkflowGQLModel, WorkflowStateGQLModel, WorkflowTransitionGQLModel)
 
-There are two supported ways to start the application:
-<br/><br/>
+Entity (WorkflowStateUserGQLModel, WorkflowStateRoleGQLModel)
 
-Start the app without the docker
-- is quite complicated as it is part of federation API, prefer use in docker
-- you need to have running postgres database which is ready to use
-- change the ComposeConnectionString inner constants in DBDefinition.py to your postgres address (see used pattern)
-- to start the app outside of docker use the following command:
-uvicorn main:app --reload
-- after application startup you can access the graphQL UI on ip given by uvicorn - remember to add /gql (example: http://127.0.0.1:8000/gql)
-- by default the app creates some random database after every startup (not all tables are populated with data)
-<br/><br/>
+Modely v databázi pomocí SQLAlchemy, API endpoint typu GraphQL s pomocí knihovny Strawberry.
 
-Start the app inside the docker using docker-compose.yml (recommended)
-- to start the app as a docker container you first need to create the gql_core image - to do this use following command:
-docker build -t gql_core .
-- this image contains our solution with SQLAlchemy models and GraphQL endpoint
-- (optional) you can run the container standalone on any port you want by using: docker run -p your_port:8001 gql_core
-- use docker-compose.yml file to set up postgres database and gql_core using this command:
-docker-compose up
-- docker will use given compose file to create two containers (isdatabase_gql_entry_point and isdatabase_database)
-- gql_entry_point is based on the gql_core image and provides the GraphQL endpoint (contains all our code)
-- database container is based on postgres 13.2 image and provides a database (image will be downloaded if necessary)
-- postgres is automatically set up by docker-compose.yml - there you can edit variables such as database name, username and password - these will be used by gql to acess the database
-- these two containers are able to exchange data between each other on closed docker network
-- only gql endpoint is available for other device outside of docker network - to access the GraphQL UI open http://localhost:82/gql on your device
-<br/><br/>
+Přístup k databázi řešte důsledně přes AioDataloder, resp. (https://github.com/hrbolek/uoishelpers/blob/main/uoishelpers/dataloaders.py).
 
-- in this version of our project the database is populated with random data (not all databse is populated - for testing purposes only)
-<br/><br/>
+Zabezpečte kompletní CRUD operace nad entitami ExternalIdModel, ExternalIdTypeModel, ExternalIdCategoryModel
 
-pytest --cov-report term-missing --cov=GraphTypeDefinitions --cov=DBDefinitions tests -x
+CUD operace jako návratový typ nejméně se třemi prvky id, msg a „entityresult“ (pojmenujte adekvátně podle dotčené entity), vhodné přidat možnost nadřízené entity, speciálně pro operaci D.
+
+Řešte autorizaci operací (permission classes).
+
+Kompletní CRUD dotazy na GQL v souboru externalids_queries.json (dictionary), jméno klíče nechť vhodně identifikuje operaci, hodnota je dictionary s klíči query (obsahuje parametrický dotaz) nebo mutation (obsahuje parametrické mutation) a variables (obsahuje dictionary jako testovací hodnoty).
+
+Kompletní popisy API v kódu (description u GQLModelů) a popisy DB vrstvy (comment u DBModelů).
+
+Zabezpečte více jak 90% code test coverage (standard pytest).
+
+
+## Plán postupu
+* 16.10. - příprava na 1. projektový den, vytvořený GitHub repository, zprovozněný Docker
+* 23.10. - 26.11. - bližší seznámení s projektem, porozuměmní technikám, příprava na 2. projektový den, příprava RU operací
+* 27.11. - prezentace postupu na 2. projektovém dnu
+* 27.11. - 8.12. - implementace CRU operací
+* 10.12. - začatek testování
+* 11.12. - 13.12. - oprava chyb, testování
+* 5.1 - 10.1 - permission classes
+* 11.1 - 20.1 - finalizace, testování, oprava chyb
+
+
+## Spuštění testy
+```bash
+pytest --cov-report term-missing --cov=DBDefinitions --cov=GraphTypeDefinitions --cov=utils --log-cli-level=INFO -x
+
+pytest --cov-report term-missing --cov=DBDefinitions --cov=GraphTypeDefinitions --cov=utils --log-cli-level=INFO -x tests 
+
+```
+
+
+## .env file
+```
+DEMO=True
+DEMOUSER={"id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "name": "John", "surname": "Newbie"}
+JWTPUBLICKEY=http://localhost:8000/oauth/publickey
+JWTRESOLVEUSERPATH=http://localhost:8000/oauth/userinfo
+GQLUG_ENDPOINT_URL=http://localhost:8000/gql
+```
+
+## Uvicorn
+```
+uvicorn main:app --env-file environment.txt --port 8000 --reload
+```
+
+
+## Pytest coverage report
+```text
+---------- coverage: platform win32, python 3.10.10-final-0 ----------
+Name                                                    Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------------------       
+DBDefinitions\AuthorizationGroupModel.py                   15      0   100%
+DBDefinitions\AuthorizationModel.py                         8      0   100%
+DBDefinitions\AuthorizationRoleTypeModel.py                16      0   100%
+DBDefinitions\AuthorizationUserModel.py                    15      0   100%
+DBDefinitions\Base.py                                       2      0   100%
+DBDefinitions\WorkflowModel.py                             17      0   100%
+DBDefinitions\WorkflowStateModel.py                        17      0   100%
+DBDefinitions\WorkflowStateRoleTypeModel.py                18      0   100%
+DBDefinitions\WorkflowStateUserModel.py                    19      0   100%
+DBDefinitions\WorkflowTransitionModel.py                   19      0   100%
+DBDefinitions\__init__.py                                  36      1    97%   36
+DBDefinitions\uuid.py                                       9      0   100%
+GraphTypeDefinitions\BaseGQLModel.py                       14      0   100%
+GraphTypeDefinitions\_GraphPermissions.py                  88     48    45%   150-164, 174-177, 197-198, 219-287
+GraphTypeDefinitions\_GraphResolvers.py                    95     21    78%   25-27, 35-46, 
+55-57, 95-97, 321-323
+GraphTypeDefinitions\__init__.py                           55      0   100%
+GraphTypeDefinitions\authorizationGQLModel.py               0      0   100%
+GraphTypeDefinitions\authorizationGroupGQLModel.py          0      0   100%
+GraphTypeDefinitions\authorizationRoleTypeGQLModel.py       0      0   100%
+GraphTypeDefinitions\authorizationUserGQLModel.py           0      0   100%
+GraphTypeDefinitions\externals.py                          28      3    89%   38-40
+GraphTypeDefinitions\utils.py                               0      0   100%
+GraphTypeDefinitions\workflowGQLModel.py                   85      0   100%
+GraphTypeDefinitions\workflowStateGQLModel.py             111      0   100%
+GraphTypeDefinitions\workflowStateRoleTypeGQLModel.py      80      0   100%
+GraphTypeDefinitions\workflowStateUserGQLModel.py          80      0   100%
+GraphTypeDefinitions\workflowTransitionGQLModel.py        114      2    98%   240-241       
+utils\DBFeeder.py                                          37      0   100%
+utils\Dataloaders.py                                      129     12    91%   69, 83-102    
+utils\__init__.py                                           0      0   100%
+utils\gql_ug_proxy.py                                      36      7    81%   29-31, 39-42  
+utils\sentinel.py                                           8      0   100%
+-------------------------------------------------------------------------------------       
+TOTAL                                                    1151     94    92%
+
+```

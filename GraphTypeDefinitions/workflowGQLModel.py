@@ -44,12 +44,8 @@ class WorkflowGQLModel(BaseGQLModel):
 
     id = resolve_id
     name = resolve_name
-    valid = resolve_valid
     lastchange = resolve_lastchange    
     created = resolve_created
-    createdby = resolve_createdby
-    changedby = resolve_changedby
-    rbacobject = resolve_rbacobject
     
 
     @strawberry.field(description="""Proxy states attached to this workflow""", permission_classes=[OnlyForAuthentized(isList=True)] )

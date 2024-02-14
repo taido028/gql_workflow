@@ -119,6 +119,10 @@ class Mutation:
 
     workflow_state_update = workflow_state_update
 
+    # from .workflowStateGQLModel import workflow_state_delete
+
+    # workflow_state_delete = workflow_state_delete
+
     # from .WorkflowStateRoleTypeGQLModel import *
 
     from .workflowTransitionGQLModel import workflow_transition_insert
@@ -128,6 +132,10 @@ class Mutation:
     from .workflowTransitionGQLModel import workflow_transition_update
 
     workflow_transition_update = workflow_transition_update
+
+    from .workflowTransitionGQLModel import workflow_transition_delete
+
+    workflow_transition_delete = workflow_transition_delete
 
     # from .WorkflowStateUserGQLModel import *
     from .workflowStateUserGQLModel import workflow_state_add_user

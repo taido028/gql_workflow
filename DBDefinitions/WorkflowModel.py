@@ -21,8 +21,8 @@ class WorkflowModel(BaseModel):
 
     # states = relationship("WorkflowStateModel", back_populates="workflow")
 
-    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="Date and time the record was created")
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now(),comment="Date and time of last change")
     createdby = UUIDFKey(nullable=True, comment="who has created the entity")
                 #Column(ForeignKey("users.id"), index=True, nullable=True, comment="who has created the entity")
     changedby = UUIDFKey(nullable=True, comment="who has changed this entity")

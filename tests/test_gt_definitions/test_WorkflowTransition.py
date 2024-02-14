@@ -73,3 +73,18 @@ test_update_workflowtransition = createUpdateQuery(
     variables={"id": "22b0aec9-a0d4-4a8b-a34d-6481fe45f14b", "name": "test", "sourcestateId": "eb46ece6-be1b-4142-a5c5-0aac31e681f0", "destinationstateId": "31b95aba-4de0-43f5-91ec-ba69183b1ffe"},
     tableName="awworkflowtransitions",
 )
+
+
+test_delete_workflowtransition = createFrontendQuery(
+    query="""mutation ($workflowId: UUID!, $sourcestateId: UUID!, $destinationstateId: UUID!){
+        result: workflowTransitionDelete(payload:{workflowId: $workflowId, sourcestateId: $sourcestateId, destinationstateId: $destinationstateId}){
+            id
+            msg
+            transition{
+                id
+            }
+        }
+    }""",
+    variables={"workflowId": "22b0aec9-a0d4-4a8b-a34d-6481fe45f14b", "sourcestateId": "eb46ece6-be1b-4142-a5c5-0aac31e681f0", "destinationstateId": "31b95aba-4de0-43f5-91ec-ba69183b1ffe"},
+    
+)

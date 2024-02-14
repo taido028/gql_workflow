@@ -33,8 +33,18 @@ async def resolve_group_id(self) -> typing.Optional["GroupGQLModel"]: return awa
 
 async def resolve_user(user_id):
     from .externals import UserGQLModel
-    result = None if user_id is None else await UserGQLModel.resolve_reference(user_id)
-    return result
+    if user_id is None:
+        return None
+    # Debugging
+    # print(f"Resolving user for ID: {user_id}")
+    try:
+        result = await UserGQLModel.resolve_reference(id=user_id, info=None)
+        return result
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error resolving user: {e}")
+        return None
+
 
 
 @strawberry.field(description="""User ID """, permission_classes=[OnlyForAuthentized()])

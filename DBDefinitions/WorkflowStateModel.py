@@ -22,13 +22,11 @@ class WorkflowStateModel(BaseModel):
     # roletypes = relationship("WorkflowStateRoleModel", back_populates="workflowstate")
     # users = relationship("WorkflowStateUserModel", back_populates="workflowstate")
 
-    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(
-        nullable=True
-    )  # Column(ForeignKey("users.id"), index=True, nullable=True)
-    createdby = UUIDFKey(
-        nullable=True
-    )  # Column(ForeignKey("users.id"), index=True, nullable=True)
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="Date and time the record was created")
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now(),comment="Date and time of last change")
+    changedby = UUIDFKey(nullable=True, comment="who has changed this entity")
+                #Column(ForeignKey("users.id"), index=True, nullable=True, comment="who has changed this entity")
+    createdby = UUIDFKey(nullable=True, comment="who has created the entity")
+                #Column(ForeignKey("users.id"), index=True, nullable=True, comment="who has created the entity")
 
     rbacobject = UUIDFKey(nullable=True, comment="user or group id, determines access")

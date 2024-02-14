@@ -17,15 +17,14 @@ class WorkflowTransitionModel(BaseModel):
     valid = Column(Boolean, default=True, comment="if this entity is valid or invalid")
     rbacobject = UUIDFKey(nullable=True, comment="user or group id, determines access")
 
-    workflow_id = Column(ForeignKey("awworkflows.id"), index=True)
-    sourcestate_id = Column(ForeignKey("awworkflowstates.id"), index=True)
-    destinationstate_id = Column(ForeignKey("awworkflowstates.id"), index=True)
+    workflow_id = Column(ForeignKey("awworkflows.id"), index=True, comment="Id of the workflow")
+    sourcestate_id = Column(ForeignKey("awworkflowstates.id"), index=True, comment="Id of the first state(source)")
+    destinationstate_id = Column(ForeignKey("awworkflowstates.id"), index=True, comment="Id of the second state(destination)")
 
-    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(
-        nullable=True
-    )  # Column(ForeignKey("users.id"), index=True, nullable=True)
-    createdby = UUIDFKey(
-        nullable=True
-    )  # Column(ForeignKey("users.id"), index=True, nullable=True)
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="Date and time the record was created")
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now(),comment="Date and time of last change")
+    createdby = UUIDFKey(nullable=True, comment="who has created the entity")
+                #Column(ForeignKey("users.id"), index=True, nullable=True, comment="who has created the entity")
+    changedby = UUIDFKey(nullable=True, comment="who has changed this entity")
+                #Column(ForeignKey("users.id"), index=True, nullable=True, comment="who has changed this entity")
+

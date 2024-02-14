@@ -61,6 +61,8 @@ class WorkflowStateRoleTypeGQLModel(BaseGQLModel):
     id = resolve_id
     lastchange = resolve_lastchange
     accesslevel = resolve_accesslevel
+    createdby = resolve_createdby
+    changedby = resolve_changedby
     rbacobject = resolve_rbacobject
     valid = resolve_valid
 

@@ -62,7 +62,10 @@ class WorkflowStateUserGQLModel(BaseGQLModel):
     id = resolve_id
     valid = resolve_valid
     lastchange = resolve_lastchange
+    createdby = resolve_createdby
+    changedby = resolve_changedby
     rbacobject = resolve_rbacobject
+
 
     @strawberry.field(description="""User""", permission_classes=[OnlyForAuthentized()])
     def user(self) -> Optional[UserGQLModel]:

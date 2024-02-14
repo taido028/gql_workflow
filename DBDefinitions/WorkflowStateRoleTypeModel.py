@@ -21,14 +21,12 @@ class WorkflowStateRoleTypeModel(BaseModel):
     # workflowstate = relationship("WorkflowStateModel", back_populates="roletypes")
 
     roletype_id = UUIDFKey(
-        nullable=True
+        nullable=True, comment="Role type identifier (foreign key) with the possibility of a null value"
     )  # Column(ForeignKey("roletypes.id"), index=True)
 
-    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(
-        nullable=True
-    )  # Column(ForeignKey("users.id"), index=True, nullable=True)
-    createdby = UUIDFKey(
-        nullable=True
-    )  # Column(ForeignKey("users.id"), index=True, nullable=True)
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="Date and time the record was created")
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now(),comment="Date and time of last change")
+    createdby = UUIDFKey(nullable=True, comment="who has created the entity")
+                #Column(ForeignKey("users.id"), index=True, nullable=True, comment="who has created the entity")
+    changedby = UUIDFKey(nullable=True, comment="who has changed this entity")
+                #Column(ForeignKey("users.id"), index=True, nullable=True, comment="who has changed this entity")

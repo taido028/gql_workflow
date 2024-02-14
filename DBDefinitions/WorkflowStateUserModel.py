@@ -20,14 +20,12 @@ class WorkflowStateUserModel(BaseModel):
     workflowstate_id = Column(ForeignKey("awworkflowstates.id"), index=True)
     # workflowstate = relationship("WorkflowStateModel", back_populates="users")
 
-    user_id = UUIDFKey(nullable=True)  # Column(ForeignKey("users.id"), index=True)
-    group_id = UUIDFKey(nullable=True)  # Column(ForeignKey("groups.id"), index=True)
+    user_id = UUIDFKey(nullable=True, comment="User identifier (foreign key) with the possibility of a null value")  # Column(ForeignKey("users.id"), index=True)
+    group_id = UUIDFKey(nullable=True, comment="Group identifier (foreign key) with the possibility of a null value")  # Column(ForeignKey("groups.id"), index=True)
 
-    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(
-        nullable=True
-    )  # Column(ForeignKey("users.id"), index=True, nullable=True)
-    createdby = UUIDFKey(
-        nullable=True
-    )  # Column(ForeignKey("users.id"), index=True, nullable=True)
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="Date and time the record was created")
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now(),comment="Date and time of last change")
+    createdby = UUIDFKey(nullable=True, comment="who has created the entity")
+                #Column(ForeignKey("users.id"), index=True, nullable=True, comment="who has created the entity")
+    changedby = UUIDFKey(nullable=True, comment="who has changed this entity")
+                #Column(ForeignKey("users.id"), index=True, nullable=True, comment="who has changed this entity")
